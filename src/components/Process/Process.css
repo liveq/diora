@@ -1,0 +1,201 @@
+.process {
+  padding: 80px 0;
+  background: white;
+}
+
+.process-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px 30px;
+  margin-top: 50px;
+  position: relative;
+}
+
+.process-card {
+  text-align: center;
+  padding: 30px 20px;
+  position: relative;
+  background: #f8f8f8;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.process-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  background: white;
+}
+
+.process-icon {
+  font-size: 48px;
+  margin-bottom: 20px;
+  display: inline-block;
+}
+
+.process-step {
+  color: var(--accent-gold);
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+.process-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--primary-black);
+  margin-bottom: 15px;
+}
+
+.process-description {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.process-arrow {
+  position: absolute;
+  right: -30px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 24px;
+  color: var(--accent-gold);
+  opacity: 0.5;
+}
+
+/* Hide arrows for cards 3 and below */
+.process-card:nth-child(3) .process-arrow {
+  display: none;
+}
+
+.process-card:nth-child(n+4) .process-arrow {
+  display: none;
+}
+
+/* Arrow down from card 3 to card 4 */
+.process-card:nth-child(3)::after {
+  content: '↓';
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 24px;
+  color: var(--accent-gold);
+  opacity: 0.5;
+}
+
+/* Left arrows for bottom row (between cards) */
+.process-card:nth-child(4)::before {
+  content: '←';
+  position: absolute;
+  left: -30px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 24px;
+  color: var(--accent-gold);
+  opacity: 0.5;
+}
+
+.process-card:nth-child(5)::before {
+  content: '←';
+  position: absolute;
+  left: -30px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 24px;
+  color: var(--accent-gold);
+  opacity: 0.5;
+}
+
+.process-timeline-mobile {
+  display: none;
+}
+
+@media (max-width: 992px) {
+  .process-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .process-arrow {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .process {
+    padding: 60px 0;
+  }
+
+  .process-grid {
+    display: none;
+  }
+
+  .process-timeline-mobile {
+    display: block;
+    margin-top: 40px;
+    position: relative;
+    padding-left: 40px;
+  }
+
+  .process-timeline-mobile::before {
+    content: '';
+    position: absolute;
+    left: 20px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent-gold), #ddd);
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 40px;
+  }
+
+  .timeline-marker {
+    position: absolute;
+    left: -40px;
+    top: 0;
+    width: 40px;
+    height: 40px;
+    background: white;
+    border: 3px solid var(--accent-gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+
+  .timeline-icon {
+    display: none;
+  }
+
+  .timeline-step {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent-gold);
+  }
+
+  .timeline-content {
+    background: #f8f8f8;
+    padding: 20px;
+    border-radius: 8px;
+    margin-left: 10px;
+  }
+
+  .timeline-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--primary-black);
+    margin-bottom: 10px;
+  }
+
+  .timeline-description {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.6;
+    margin: 0;
+  }
+}

@@ -1,0 +1,171 @@
+.about {
+  padding: 100px 0;
+  background: var(--primary-white);
+}
+
+.about-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+.about-title {
+  font-size: 36px;
+  color: var(--primary-black);
+  margin-bottom: 30px;
+}
+
+.about-description {
+  font-size: 18px;
+  color: var(--text-light);
+  line-height: 1.8;
+  margin-bottom: 40px;
+  word-break: keep-all;
+  word-wrap: break-word;
+}
+
+.features-list {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.feature-item {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.feature-icon {
+  width: 30px;
+  height: 30px;
+  background: var(--accent-gold);
+  color: var(--primary-white);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.feature-content {
+  flex: 1;
+}
+
+.feature-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--primary-black);
+  margin-bottom: 5px;
+  white-space: nowrap;
+  word-break: keep-all;
+}
+
+.feature-description {
+  font-size: 14px;
+  color: var(--text-light);
+  line-height: 1.6;
+  word-break: keep-all;
+  word-wrap: break-word;
+}
+
+.about-visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.visual-placeholder {
+  width: 400px;
+  height: 400px;
+  position: relative;
+}
+
+.visual-shape {
+  position: absolute;
+  border-radius: 20px;
+  opacity: 0.9;
+}
+
+.shape-1 {
+  width: 200px;
+  height: 200px;
+  background: linear-gradient(135deg, var(--accent-gold), #D4A017);
+  top: 0;
+  left: 0;
+  animation: float 4s ease-in-out infinite;
+}
+
+.shape-2 {
+  width: 150px;
+  height: 150px;
+  background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
+  top: 100px;
+  right: 50px;
+  animation: float 4s ease-in-out infinite 1s;
+}
+
+.shape-3 {
+  width: 180px;
+  height: 180px;
+  background: linear-gradient(135deg, var(--primary-black), #333);
+  bottom: 0;
+  left: 80px;
+  animation: float 4s ease-in-out infinite 2s;
+}
+
+@media (max-width: 968px) {
+  .about-content {
+    grid-template-columns: 1fr;
+    gap: 50px;
+  }
+
+  .about-visual {
+    order: -1;
+  }
+
+  .visual-placeholder {
+    width: 300px;
+    height: 300px;
+  }
+
+  .shape-1 {
+    width: 150px;
+    height: 150px;
+  }
+
+  .shape-2 {
+    width: 120px;
+    height: 120px;
+  }
+
+  .shape-3 {
+    width: 140px;
+    height: 140px;
+  }
+}
+
+@media (max-width: 768px) {
+  .about {
+    padding: 60px 0;
+  }
+
+  .about-title {
+    font-size: 28px;
+  }
+
+  .about-description {
+    font-size: 16px;
+  }
+
+  .feature-title {
+    font-size: 16px;
+    white-space: normal;
+  }
+
+  .feature-description {
+    font-size: 14px;
+  }
+}
