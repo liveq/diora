@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './Portfolio.css';
 
@@ -25,13 +25,13 @@ const Portfolio: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const categories: CategoryInfo[] = [
+  const categories: CategoryInfo[] = useMemo(() => [
     { id: 'all', name: '전체', color: '#333333' },
     { id: 'search', name: '서칭', color: '#FF6B6B' },
     { id: 'goods', name: '굿즈', color: '#4ECDC4' },
     { id: 'apparel', name: '어패럴', color: '#45B7D1' },
     { id: 'pc', name: 'PC', color: '#96CEB4' }
-  ];
+  ], []);
 
   // URL 파라미터에서 카테고리 읽기
   useEffect(() => {
