@@ -10,7 +10,11 @@ import FAQ from './components/FAQ/FAQ';
 // import Contact from './components/Contact/Contact';
 import ContactGoogleFormCompact from './components/ContactGoogleFormCompact/ContactGoogleFormCompact';
 import Footer from './components/Footer/Footer';
+import PortfolioPage from './pages/PortfolioPage';
 import GoogleFormTest from './pages/GoogleFormTest';
+import AdminPage from './pages/AdminPage';
+import ScrollToTop from './components/ScrollToTop';
+import Chat from './components/Chat/Chat';
 
 function HomePage() {
   return (
@@ -30,11 +34,15 @@ function HomePage() {
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <div className="App">
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/portfolio" element={<PortfolioPage />} />
           <Route path="/google-form-test" element={<GoogleFormTest />} />
+          <Route path="/admin" element={<AdminPage />} />
         </Routes>
+        <Chat />
       </div>
     </Router>
   );
