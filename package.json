@@ -2,6 +2,7 @@
   "name": "diora-website",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://diora.co.kr",
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
     "gh-pages": "^6.1.1",
