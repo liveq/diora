@@ -41,7 +41,7 @@ const Portfolio: React.FC = () => {
     if (categoryParam && categories.some(cat => cat.id === categoryParam)) {
       setSelectedCategory(categoryParam);
     }
-  }, [location.search]);
+  }, [location.search, categories]);
 
   // 포트폴리오 이미지 로드
   useEffect(() => {
