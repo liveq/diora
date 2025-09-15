@@ -7,8 +7,8 @@ const CONFIG = {
   outputDir: path.join(__dirname, '..', 'public', 'portfolio'),
   thumbnailSize: 400,
   fullSize: 800,
-  quality: 75,
-  webpQuality: 80,
+  quality: 100,
+  webpQuality: 95,
   supportedFormats: ['.jpg', '.jpeg', '.png', '.webp', '.gif', '.bmp', '.tiff']
 };
 
@@ -52,7 +52,7 @@ async function processImage(inputPath, category, index) {
 
     const baseName = `${category}_${index}`;
 
-    // 1. 썸네일 생성 (400x400, JPG & WebP)
+    // 1. 썸네일 생성 (250x250, JPG & WebP)
     await image
       .resize(CONFIG.thumbnailSize, CONFIG.thumbnailSize, {
         fit: 'inside',

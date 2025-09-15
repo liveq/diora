@@ -23,6 +23,7 @@ const Portfolio: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<PortfolioItem | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [visibleCount, setVisibleCount] = useState(6); // 처음에 6개만 보여주기
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -47,44 +48,31 @@ const Portfolio: React.FC = () => {
 
   // 포트폴리오 이미지 로드 - 썸네일과 풀사이즈 구분
   useEffect(() => {
-    const loadPortfolioItems = async () => {
+    const loadPortfolioItems = () => {
       const items: PortfolioItem[] = [];
       const imageCategories = ['search', 'goods', 'apparel', 'pc'];
 
+      // WebP 지원 확인 (한 번만)
+      const supportsWebP = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = 1;
+        canvas.height = 1;
+        return canvas.toDataURL('image/webp').indexOf('image/webp') === 0;
+      };
+
+      const format = supportsWebP() ? 'webp' : 'jpg';
+
+      // 이미지 존재 여부를 체크하지 않고 바로 추가 (모든 이미지가 있다고 가정)
       for (const category of imageCategories) {
         for (let i = 1; i <= 6; i++) {
           const baseName = `${category}_${i}`;
-
-          // WebP 지원 확인
-          const supportsWebP = () => {
-            const canvas = document.createElement('canvas');
-            canvas.width = 1;
-            canvas.height = 1;
-            return canvas.toDataURL('image/webp').indexOf('image/webp') === 0;
-          };
-
-          const format = supportsWebP() ? 'webp' : 'jpg';
-
-          // 썸네일과 풀사이즈 경로 설정
-          const thumbnailSrc = `/portfolio/thumbnails/${category}/${baseName}.${format}`;
-          const fullSrc = `/portfolio/full/${category}/${baseName}.${format}`;
-
-          // 이미지 존재 확인 (썸네일 기준)
-          try {
-            const response = await fetch(thumbnailSrc, { method: 'HEAD' });
-            if (response.ok) {
-              items.push({
-                id: baseName,
-                category,
-                thumbnailSrc,
-                fullSrc,
-                alt: `${category} 포트폴리오 ${i}`
-              });
-            }
-          } catch {
-            // 이미지가 없으면 건너뛰기
-            continue;
-          }
+          items.push({
+            id: baseName,
+            category,
+            thumbnailSrc: `/portfolio/thumbnails/${category}/${baseName}.${format}`,
+            fullSrc: `/portfolio/full/${category}/${baseName}.${format}`,
+            alt: `${category} 포트폴리오 ${i}`
+          });
         }
       }
 
@@ -92,8 +80,26 @@ const Portfolio: React.FC = () => {
       const shuffledItems = [...items].sort(() => Math.random() - 0.5);
       setPortfolioItems(shuffledItems);
       setIsLoading(false);
+
+      // 이미지 프리로딩 (백그라운드에서 미리 로드)
+      const preloadImages = () => {
+        shuffledItems.forEach((item, index) => {
+          // 처음 6개는 이미 보이므로 7번째부터 프리로드
+          if (index >= 6) {
+            const img = new Image();
+            img.src = item.thumbnailSrc;
+          }
+        });
+      };
+
+      // 0.3초 후 나머지 이미지 표시 & 프리로딩 시작
+      setTimeout(() => {
+        setVisibleCount(24);
+        preloadImages();
+      }, 300);
     };
 
+    // 즉시 실행
     loadPortfolioItems();
   }, []);
 
@@ -218,7 +224,7 @@ const Portfolio: React.FC = () => {
         </div>
 
         <div className="portfolio-grid">
-          {filteredItems.map(item => (
+          {filteredItems.slice(0, visibleCount).map(item => (
             <div
               key={item.id}
               className="portfolio-item"
@@ -243,6 +249,15 @@ const Portfolio: React.FC = () => {
               </div>
             </div>
           ))}
+          {/* 스켈레톤 로더 */}
+          {visibleCount < filteredItems.length && (
+            [...Array(Math.min(6, filteredItems.length - visibleCount))].map((_, index) => (
+              <div key={`skeleton-${index}`} className="portfolio-item skeleton">
+                <div className="skeleton-image"></div>
+                <div className="skeleton-text"></div>
+              </div>
+            ))
+          )}
         </div>
 
         {filteredItems.length === 0 && (
