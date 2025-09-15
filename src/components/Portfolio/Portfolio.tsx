@@ -52,8 +52,8 @@ const Portfolio: React.FC = () => {
       const items: PortfolioItem[] = [];
       const imageCategories = ['search', 'goods', 'apparel', 'pc'];
 
-      // JPG 사용 (WebP 체크 제거로 요청 감소)
-      const format = 'jpg';
+      // WebP만 사용 (모든 최신 브라우저 지원)
+      const format = 'webp';
 
       // 이미지 존재 여부를 체크하지 않고 바로 추가 (모든 이미지가 있다고 가정)
       for (const category of imageCategories) {
