@@ -7,13 +7,23 @@ import { Chat, SessionStatus, Message } from '../types/chat.types';
 import { sendSessionNotification } from '../services/telegramNotifications';
 import { localStorageManager } from '../services/localStorageManager';
 
+type TabType = 'all' | SessionStatus | 'archived' | 'blocked';
+
 interface AdminPageProps {}
 
 const AdminPage: React.FC<AdminPageProps> = () => {
   const [chats, setChats] = useState<Chat[]>([]);
   const [selectedChat, setSelectedChat] = useState<string | null>(null);
   const [replyText, setReplyText] = useState('');
-  const [activeTab, setActiveTab] = useState<'all' | SessionStatus>('all');
+  const [activeTab, setActiveTab] = useState<TabType>('all');
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+
+  // Toast 알림 표시
+  const showToast = (message: string) => {
+    setToastMessage(message);
+    setTimeout(() => setToastMessage(null), 3000);
+  };
 
   // 모든 채팅 불러오기 - Firebase 우선 사용
   useEffect(() => {
@@ -87,20 +97,127 @@ const AdminPage: React.FC<AdminPageProps> = () => {
     initializeAdmin();
   }, []);
 
+  // 드롭다운 외부 클릭시 닫기
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (openDropdown && !(event.target as Element).closest('.chat-options-menu')) {
+        setOpenDropdown(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [openDropdown]);
+
   // 상태별 채팅 그룹화
-  const groupedChats = useMemo(() => {
+  const groupedChats = useMemo((): Record<TabType, Chat[]> => {
     const groups = {
       all: chats,
       active: chats.filter(chat => chat.info.status === 'active'),
       inactive: chats.filter(chat => chat.info.status === 'inactive'),
       closed: chats.filter(chat => chat.info.status === 'closed'),
-      reopened: chats.filter(chat => chat.info.status === 'reopened')
+      reopened: chats.filter(chat => chat.info.status === 'reopened'),
+      archived: chats.filter(chat => chat.info.archived === true),
+      blocked: chats.filter(chat => chat.info.blockedUser === true)
     };
     return groups;
   }, [chats]);
 
   // 현재 탭의 채팅 목록
   const currentChats = groupedChats[activeTab];
+
+  // 채팅 보관
+  const handleArchiveChat = async (chatId: string) => {
+    try {
+      await update(ref(database, `chats/${chatId}/info`), {
+        archived: true,
+        archivedAt: Date.now()
+      });
+      showToast('채팅이 보관되었습니다');
+    } catch (error) {
+      console.error('보관 실패:', error);
+      showToast('보관에 실패했습니다');
+    }
+  };
+
+  // 채팅 보관 해제
+  const handleUnarchiveChat = async (chatId: string) => {
+    try {
+      await update(ref(database, `chats/${chatId}/info`), {
+        archived: false,
+        archivedAt: null
+      });
+      showToast('보관이 해제되었습니다');
+    } catch (error) {
+      console.error('보관 해제 실패:', error);
+      showToast('보관 해제에 실패했습니다');
+    }
+  };
+
+  // 사용자 차단
+  const handleBlockChat = async (chatId: string) => {
+    try {
+      await update(ref(database, `chats/${chatId}/info`), {
+        blockedUser: true,
+        blockedAt: Date.now(),
+        status: 'closed'
+      });
+      showToast('사용자가 차단되었습니다');
+    } catch (error) {
+      console.error('차단 실패:', error);
+      showToast('차단에 실패했습니다');
+    }
+  };
+
+  // 사용자 차단 해제
+  const handleUnblockChat = async (chatId: string) => {
+    try {
+      await update(ref(database, `chats/${chatId}/info`), {
+        blockedUser: false,
+        blockedAt: null
+      });
+      showToast('차단이 해제되었습니다');
+    } catch (error) {
+      console.error('차단 해제 실패:', error);
+      showToast('차단 해제에 실패했습니다');
+    }
+  };
+
+  // 채팅 삭제
+  const handleDeleteChat = async (chatId: string) => {
+    if (!window.confirm('정말로 이 채팅을 삭제하시겠습니까?')) return;
+
+    try {
+      await update(ref(database), { [`chats/${chatId}`]: null });
+      showToast('채팅이 삭제되었습니다');
+      if (selectedChat === chatId) {
+        setSelectedChat(null);
+      }
+    } catch (error) {
+      console.error('삭제 실패:', error);
+      showToast('삭제에 실패했습니다');
+    }
+  };
+
+  // 채팅 거부 처리 (영구 차단)
+  const handleRejectChat = async (chatId: string) => {
+    if (!window.confirm('이 사용자를 영구적으로 차단하시겠습니까?')) return;
+
+    try {
+      await update(ref(database, `chats/${chatId}/info`), {
+        rejected: true,
+        rejectedAt: Date.now(),
+        status: 'closed',
+        blockedUser: true
+      });
+      showToast('사용자가 거부 처리되었습니다');
+    } catch (error) {
+      console.error('거부 처리 실패:', error);
+      showToast('거부 처리에 실패했습니다');
+    }
+  };
 
   // 관리자 답장 전송
   const sendReply = async () => {
@@ -157,6 +274,55 @@ const AdminPage: React.FC<AdminPageProps> = () => {
 
   const selectedChatData = chats.find(chat => chat.id === selectedChat);
 
+  // 탭별 드롭다운 버튼 구성
+  const getDropdownButtons = (activeTab: TabType, chat: Chat) => {
+    if (activeTab === 'archived') {
+      return [
+        { action: 'unarchive', icon: '📤', label: '보관해제' },
+        { action: 'delete', icon: '🗑️', label: '삭제' },
+        { action: 'block', icon: '🚫', label: '차단' }
+      ];
+    } else if (activeTab === 'blocked') {
+      return [
+        { action: 'unblock', icon: '✅', label: '차단해제' },
+        { action: 'delete', icon: '🗑️', label: '삭제' },
+        { action: 'reject', icon: '❌', label: '거부' }
+      ];
+    } else {
+      return [
+        { action: 'archive', icon: '📁', label: '보관' },
+        { action: 'delete', icon: '🗑️', label: '삭제' },
+        { action: 'block', icon: '🚫', label: '차단' }
+      ];
+    }
+  };
+
+  // 드롭다운 액션 실행
+  const handleDropdownAction = (action: string, chatId: string) => {
+    setOpenDropdown(null); // 드롭다운 닫기
+
+    switch (action) {
+      case 'archive':
+        handleArchiveChat(chatId);
+        break;
+      case 'unarchive':
+        handleUnarchiveChat(chatId);
+        break;
+      case 'block':
+        handleBlockChat(chatId);
+        break;
+      case 'unblock':
+        handleUnblockChat(chatId);
+        break;
+      case 'delete':
+        handleDeleteChat(chatId);
+        break;
+      case 'reject':
+        handleRejectChat(chatId);
+        break;
+    }
+  };
+
   // 상태별 아이콘과 색상
   const getStatusIcon = (status: SessionStatus) => {
     switch (status) {
@@ -188,6 +354,13 @@ const AdminPage: React.FC<AdminPageProps> = () => {
 
   return (
     <div className="admin-container">
+      {/* Toast 알림 */}
+      {toastMessage && (
+        <div className="toast-notification">
+          {toastMessage}
+        </div>
+      )}
+
       <div className="admin-header">
         <h1>DIORA 채팅 관리</h1>
         <div className="admin-stats">
@@ -210,6 +383,14 @@ const AdminPage: React.FC<AdminPageProps> = () => {
           <span className="stat-item reopened">
             <span className="stat-label">재개:</span>
             <span className="stat-value">{groupedChats.reopened.length}</span>
+          </span>
+          <span className="stat-item archived">
+            <span className="stat-label">보관:</span>
+            <span className="stat-value">{groupedChats.archived.length}</span>
+          </span>
+          <span className="stat-item blocked">
+            <span className="stat-label">차단:</span>
+            <span className="stat-value">{groupedChats.blocked.length}</span>
           </span>
         </div>
       </div>
@@ -252,6 +433,20 @@ const AdminPage: React.FC<AdminPageProps> = () => {
             🟠 재개
             <span className="admin-tab-badge">{groupedChats.reopened.length}</span>
           </button>
+          <button
+            className={`admin-tab-button ${activeTab === 'archived' ? 'active' : ''}`}
+            onClick={() => setActiveTab('archived')}
+          >
+            📁 보관함
+            <span className="admin-tab-badge">{groupedChats.archived.length}</span>
+          </button>
+          <button
+            className={`admin-tab-button ${activeTab === 'blocked' ? 'active' : ''}`}
+            onClick={() => setActiveTab('blocked')}
+          >
+            🚫 차단
+            <span className="admin-tab-badge">{groupedChats.blocked.length}</span>
+          </button>
         </div>
       </div>
 
@@ -262,7 +457,9 @@ const AdminPage: React.FC<AdminPageProps> = () => {
             <h3>{activeTab === 'all' ? '모든 대화' :
                 activeTab === 'active' ? '진행 중인 대화' :
                 activeTab === 'inactive' ? '비활성 대화' :
-                activeTab === 'closed' ? '종료된 대화' : '재개된 대화'}</h3>
+                activeTab === 'closed' ? '종료된 대화' :
+                activeTab === 'reopened' ? '재개된 대화' :
+                activeTab === 'archived' ? '보관된 대화' : '차단된 사용자'}</h3>
             <span className="chat-count">{currentChats.length}개</span>
           </div>
 
@@ -272,45 +469,60 @@ const AdminPage: React.FC<AdminPageProps> = () => {
             </div>
           ) : (
             currentChats.map(chat => (
-              <div
-                key={chat.id}
-                className={`chat-item ${selectedChat === chat.id ? 'active' : ''}`}
-                onClick={() => setSelectedChat(chat.id)}
-              >
-                <div className="chat-item-header">
-                  <div className="chat-item-id">
-                    {getStatusIcon(chat.info.status)}
-                    <strong>채팅 #{chat.id.slice(-8)}</strong>
+              <div key={chat.id} className="chat-item-wrapper">
+                <div
+                  className={`chat-item ${selectedChat === chat.id ? 'active' : ''}`}
+                  onClick={() => setSelectedChat(chat.id)}
+                >
+                  <div className="chat-item-header">
+                    <div className="chat-item-id">
+                      {getStatusIcon(chat.info.status)}
+                      <strong>채팅 #{chat.id.slice(-8)}</strong>
+                    </div>
+                    <span className="chat-item-time">
+                      {formatTime(chat.info.lastActivity || chat.info.startTime)}
+                    </span>
                   </div>
-                  <span className="chat-item-time">
-                    {formatTime(chat.info.lastActivity || chat.info.startTime)}
-                  </span>
+
+                  <div className="chat-item-content">
+                    <div className="last-message-preview">
+                      {chat.messages.length > 0 ?
+                        `${chat.messages[chat.messages.length - 1].sender === 'customer' ? '고객' :
+                          chat.messages[chat.messages.length - 1].sender === 'admin' ? '관리자' : '시스템'}:\u00A0${chat.messages[chat.messages.length - 1].text}` :
+                        '메시지 없음'
+                      }
+                    </div>
+                  </div>
                 </div>
 
-                <div className="chat-item-info">
-                  <div className="chat-item-status">
-                    <span className={`status-badge ${chat.info.status}`}>
-                      {chat.info.status === 'active' ? '활성' :
-                       chat.info.status === 'inactive' ? '비활성' :
-                       chat.info.status === 'closed' ? '종료됨' : '재개됨'}
-                    </span>
-                    {chat.info.sessionCount > 1 && (
-                      <span className="session-count-badge">
-                        세션 {chat.info.sessionCount}
-                      </span>
-                    )}
-                  </div>
-                  <div className="last-message">
-                    {chat.messages.length > 0 ?
-                      `${chat.messages[chat.messages.length - 1].sender === 'customer' ? '고객' :
-                        chat.messages[chat.messages.length - 1].sender === 'admin' ? '관리자' : '시스템'}:
-                        ${chat.messages[chat.messages.length - 1].text}` :
-                      '메시지 없음'
-                    }
-                  </div>
-                  <div className="message-count">
-                    메시지 {chat.messages.length}개
-                  </div>
+                <div className="chat-options-menu">
+                  <button
+                    className="options-trigger"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setOpenDropdown(openDropdown === chat.id ? null : chat.id);
+                    }}
+                    title="옵션"
+                  >
+                    ⋯
+                  </button>
+                  {openDropdown === chat.id && (
+                    <div className="options-dropdown">
+                      {getDropdownButtons(activeTab, chat).map((button) => (
+                        <button
+                          key={button.action}
+                          className={`dropdown-action ${button.action}`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDropdownAction(button.action, chat.id);
+                          }}
+                        >
+                          <span>{button.icon}</span>
+                          <span>{button.label}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             ))

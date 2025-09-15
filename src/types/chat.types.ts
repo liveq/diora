@@ -21,6 +21,12 @@ export interface ChatInfo {
   sessionCount: number;
   closedBy?: 'customer' | 'admin' | 'system';
   closeReason?: CloseReason;
+  archived?: boolean;
+  archivedAt?: number;
+  blockedUser?: boolean;
+  blockedAt?: number;
+  rejected?: boolean;
+  rejectedAt?: number;
 }
 
 export interface StatusHistory {

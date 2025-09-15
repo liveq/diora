@@ -1,14 +1,14 @@
 const sharp = require('sharp');
-const fs = require('fs').promises;
 const path = require('path');
+const fs = require('fs').promises;
 
 const CONFIG = {
   sourceDir: path.join(__dirname, '..', 'image-source'),
-  targetDir: path.join(__dirname, '..', 'public', 'portfolio'),
-  categories: ['search', 'goods', 'apparel', 'pc'],
-  maxWidth: 1200,
-  maxHeight: 1200,
-  quality: 85,
+  outputDir: path.join(__dirname, '..', 'public', 'portfolio'),
+  thumbnailSize: 400,
+  fullSize: 800,
+  quality: 75,
+  webpQuality: 80,
   supportedFormats: ['.jpg', '.jpeg', '.png', '.webp', '.gif', '.bmp', '.tiff']
 };
 
@@ -35,108 +35,150 @@ async function getImageFiles(categoryPath) {
   }
 }
 
-async function processImage(inputPath, outputPath) {
+async function processImage(inputPath, category, index) {
   try {
     const image = sharp(inputPath);
     const metadata = await image.metadata();
-    
+
     console.log(`  처리 중: ${path.basename(inputPath)}`);
     console.log(`    원본 크기: ${metadata.width}x${metadata.height}`);
-    
+
+    // 썸네일 경로
+    const thumbnailDir = path.join(CONFIG.outputDir, 'thumbnails', category);
+    const fullDir = path.join(CONFIG.outputDir, 'full', category);
+
+    await ensureDirectoryExists(thumbnailDir);
+    await ensureDirectoryExists(fullDir);
+
+    const baseName = `${category}_${index}`;
+
+    // 1. 썸네일 생성 (400x400, JPG & WebP)
     await image
-      .resize(CONFIG.maxWidth, CONFIG.maxHeight, {
+      .resize(CONFIG.thumbnailSize, CONFIG.thumbnailSize, {
         fit: 'inside',
         withoutEnlargement: true
       })
       .jpeg({ quality: CONFIG.quality })
-      .toFile(outputPath);
-    
-    const processedMetadata = await sharp(outputPath).metadata();
-    console.log(`    처리 후: ${processedMetadata.width}x${processedMetadata.height}`);
-    console.log(`    저장 위치: ${outputPath}`);
-    
+      .toFile(path.join(thumbnailDir, `${baseName}.jpg`));
+
+    await sharp(inputPath)
+      .resize(CONFIG.thumbnailSize, CONFIG.thumbnailSize, {
+        fit: 'inside',
+        withoutEnlargement: true
+      })
+      .webp({ quality: CONFIG.webpQuality })
+      .toFile(path.join(thumbnailDir, `${baseName}.webp`));
+
+    // 2. 풀사이즈 생성 (800x800, JPG & WebP)
+    await sharp(inputPath)
+      .resize(CONFIG.fullSize, CONFIG.fullSize, {
+        fit: 'inside',
+        withoutEnlargement: true
+      })
+      .jpeg({ quality: CONFIG.quality })
+      .toFile(path.join(fullDir, `${baseName}.jpg`));
+
+    await sharp(inputPath)
+      .resize(CONFIG.fullSize, CONFIG.fullSize, {
+        fit: 'inside',
+        withoutEnlargement: true
+      })
+      .webp({ quality: CONFIG.webpQuality })
+      .toFile(path.join(fullDir, `${baseName}.webp`));
+
+    console.log(`    ✅ 썸네일: ${CONFIG.thumbnailSize}x${CONFIG.thumbnailSize} (JPG & WebP)`);
+    console.log(`    ✅ 풀사이즈: ${CONFIG.fullSize}x${CONFIG.fullSize} (JPG & WebP)`);
+
     return true;
   } catch (error) {
-    console.error(`  오류 발생: ${error.message}`);
+    console.error(`이미지 처리 실패: ${inputPath}`, error);
     return false;
   }
 }
 
 async function processCategory(category) {
   console.log(`\n📁 ${category.toUpperCase()} 카테고리 처리 시작`);
-  console.log('='.repeat(50));
-  
-  const sourcePath = path.join(CONFIG.sourceDir, category);
-  const targetPath = path.join(CONFIG.targetDir, category);
-  
-  await ensureDirectoryExists(targetPath);
-  
-  const imageFiles = await getImageFiles(sourcePath);
-  
+  console.log('==================================================');
+
+  const categoryPath = path.join(CONFIG.sourceDir, category);
+  const imageFiles = await getImageFiles(categoryPath);
+
   if (imageFiles.length === 0) {
-    console.log(`  이미지가 없습니다. ${sourcePath} 폴더에 이미지를 추가해주세요.`);
-    return { category, processed: 0, total: 0 };
+    console.log('  이미지 파일이 없습니다.');
+    return { total: 0, processed: 0 };
   }
-  
+
   console.log(`  발견된 이미지: ${imageFiles.length}개`);
-  
+
   let processedCount = 0;
-  for (let i = 0; i < Math.min(imageFiles.length, 6); i++) {
-    const inputFile = imageFiles[i];
-    const inputPath = path.join(sourcePath, inputFile);
-    const outputFileName = `${category}_${i + 1}.jpg`;
-    const outputPath = path.join(targetPath, outputFileName);
-    
-    const success = await processImage(inputPath, outputPath);
+  const maxImages = 6; // 카테고리당 최대 6개 이미지
+
+  for (let i = 0; i < Math.min(imageFiles.length, maxImages); i++) {
+    const imagePath = path.join(categoryPath, imageFiles[i]);
+    const success = await processImage(imagePath, category, i + 1);
     if (success) processedCount++;
   }
-  
-  if (imageFiles.length > 6) {
-    console.log(`\n  ⚠️  주의: ${imageFiles.length - 6}개의 이미지가 무시되었습니다. (카테고리당 최대 6개)`);
+
+  return { total: Math.min(imageFiles.length, maxImages), processed: processedCount };
+}
+
+async function cleanOldFiles() {
+  console.log('\n🧹 기존 파일 정리 중...');
+
+  // 기존 카테고리별 폴더 삭제
+  const categories = ['search', 'goods', 'apparel', 'pc'];
+  for (const category of categories) {
+    const oldPath = path.join(CONFIG.outputDir, category);
+    try {
+      await fs.rmdir(oldPath, { recursive: true });
+      console.log(`  ✅ 기존 ${category} 폴더 삭제됨`);
+    } catch (error) {
+      // 폴더가 없으면 무시
+    }
   }
-  
-  return { category, processed: processedCount, total: imageFiles.length };
 }
 
 async function main() {
-  console.log('🖼️  포트폴리오 이미지 처리 시작');
-  console.log('='.repeat(50));
+  console.log('🖼️  포트폴리오 이미지 처리 시작 (썸네일 + 풀사이즈 + WebP)');
+  console.log('==================================================');
   console.log(`원본 폴더: ${CONFIG.sourceDir}`);
-  console.log(`대상 폴더: ${CONFIG.targetDir}`);
-  console.log(`최대 크기: ${CONFIG.maxWidth}x${CONFIG.maxHeight}`);
-  console.log(`품질: ${CONFIG.quality}%`);
-  
-  const results = [];
-  
-  for (const category of CONFIG.categories) {
-    const result = await processCategory(category);
-    results.push(result);
+  console.log(`대상 폴더: ${CONFIG.outputDir}`);
+  console.log(`썸네일 크기: ${CONFIG.thumbnailSize}x${CONFIG.thumbnailSize}`);
+  console.log(`풀사이즈 크기: ${CONFIG.fullSize}x${CONFIG.fullSize}`);
+  console.log(`JPG 품질: ${CONFIG.quality}%`);
+  console.log(`WebP 품질: ${CONFIG.webpQuality}%`);
+
+  // 기존 파일 정리
+  await cleanOldFiles();
+
+  // 출력 디렉토리 생성
+  await ensureDirectoryExists(CONFIG.outputDir);
+  await ensureDirectoryExists(path.join(CONFIG.outputDir, 'thumbnails'));
+  await ensureDirectoryExists(path.join(CONFIG.outputDir, 'full'));
+
+  const categories = ['search', 'goods', 'apparel', 'pc'];
+  const results = {};
+
+  for (const category of categories) {
+    results[category] = await processCategory(category);
   }
-  
-  console.log('\n' + '='.repeat(50));
+
+  console.log('\n==================================================');
   console.log('📊 처리 결과 요약');
-  console.log('='.repeat(50));
-  
-  let totalProcessed = 0;
-  let totalImages = 0;
-  
-  results.forEach(({ category, processed, total }) => {
-    console.log(`  ${category}: ${processed}/${Math.min(total, 6)}개 처리됨`);
-    totalProcessed += processed;
-    totalImages += Math.min(total, 6);
-  });
-  
-  console.log('='.repeat(50));
-  console.log(`✅ 전체: ${totalProcessed}/${totalImages}개 이미지 처리 완료`);
-  
-  console.log('\n💡 사용 방법:');
-  console.log('1. diora-website/image-source/{category}/ 폴더에 이미지를 넣으세요');
-  console.log('2. npm run process-images 명령을 실행하세요');
-  console.log('3. 처리된 이미지는 public/portfolio/{category}/ 폴더에 저장됩니다');
-  console.log('\n📝 참고:');
-  console.log('- 각 카테고리당 최대 6개의 이미지만 처리됩니다');
-  console.log('- 이미지는 알파벳/숫자 순서로 정렬되어 번호가 매겨집니다');
-  console.log('- 지원 형식: JPG, PNG, WebP, GIF, BMP, TIFF');
+  console.log('==================================================');
+
+  for (const [category, result] of Object.entries(results)) {
+    console.log(`  ${category}: ${result.processed}/${result.total}개 처리됨`);
+  }
+
+  const totalProcessed = Object.values(results).reduce((sum, r) => sum + r.processed, 0);
+  const totalFiles = Object.values(results).reduce((sum, r) => sum + r.total, 0);
+
+  console.log('==================================================');
+  console.log(`✅ 전체: ${totalProcessed}/${totalFiles}개 이미지 처리 완료`);
+  console.log('\n💡 생성된 파일:');
+  console.log('  - thumbnails/{category}/ : 400x400 썸네일 (JPG & WebP)');
+  console.log('  - full/{category}/ : 800x800 풀사이즈 (JPG & WebP)');
 }
 
 main().catch(console.error);

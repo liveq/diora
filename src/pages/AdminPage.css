@@ -50,6 +50,8 @@
 .stat-item.inactive .stat-value { color: #fbbf24; }
 .stat-item.closed .stat-value { color: #f87171; }
 .stat-item.reopened .stat-value { color: #60a5fa; }
+.stat-item.archived .stat-value { color: #9ca3af; }
+.stat-item.blocked .stat-value { color: #dc2626; }
 
 /* 탭 네비게이션 */
 .admin-tabs {
@@ -174,10 +176,18 @@
   color: #9ca3af;
 }
 
+/* 채팅 아이템 래퍼 */
+.chat-item-wrapper {
+  position: relative;
+  border-bottom: 1px solid #f3f4f6;
+  display: flex;
+  align-items: center;
+}
+
 /* 채팅 아이템 */
 .chat-item {
-  padding: 16px 20px;
-  border-bottom: 1px solid #f3f4f6;
+  flex: 1;
+  padding: 12px 20px;
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -211,6 +221,156 @@
 .chat-item-time {
   font-size: 12px;
   color: #9ca3af;
+}
+
+.chat-item-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.chat-id {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.status-indicator {
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.status-indicator.active {
+  color: #16a34a;
+}
+
+.status-indicator.inactive {
+  color: #9ca3af;
+}
+
+.chat-time {
+  font-size: 11px;
+  color: #9ca3af;
+  white-space: nowrap;
+}
+
+.chat-item-content {
+  display: flex;
+  align-items: center;
+  margin-top: 6px;
+}
+
+.last-message-preview {
+  font-size: 13px;
+  color: #6b7280;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+/* 채팅 옵션 메뉴 */
+.chat-options-menu {
+  position: relative;
+  padding: 0 10px;
+}
+
+/* 옵션 버튼 (⋯) */
+.options-trigger {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.options-trigger:hover {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+/* 드롭다운 메뉴 */
+.options-dropdown {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  min-width: 120px;
+  padding: 4px 0;
+  margin-top: 4px;
+}
+
+/* 드롭다운 버튼들 */
+.dropdown-action {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 14px;
+  color: #374151;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.dropdown-action:hover {
+  background: #f9fafb;
+}
+
+.dropdown-action.archive:hover { background: #dbeafe; }
+.dropdown-action.delete:hover { background: #fee2e2; }
+.dropdown-action.block:hover { background: #fee2e2; }
+.dropdown-action.unblock:hover { background: #dcfce7; }
+.dropdown-action.reject:hover { background: #dc2626; color: white; }
+
+.btn-action {
+  padding: 6px 10px;
+  border: none;
+  background: #f3f4f6;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  opacity: 0.7;
+}
+
+.btn-action:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.btn-action.btn-archive:hover,
+.btn-action.btn-unarchive:hover {
+  background: #dbeafe;
+}
+
+.btn-action.btn-block:hover {
+  background: #fee2e2;
+}
+
+.btn-action.btn-unblock:hover {
+  background: #dcfce7;
+}
+
+.btn-action.btn-delete:hover {
+  background: #fee2e2;
+}
+
+.btn-action.btn-reject:hover {
+  background: #dc2626;
+  color: white;
 }
 
 .chat-item-info {
@@ -255,6 +415,21 @@
   color: #2563eb;
 }
 
+.status-badge.archived {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.status-badge.blocked {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.status-badge.rejected {
+  background: #7f1d1d;
+  color: white;
+}
+
 .status-badge.large {
   padding: 6px 12px;
   font-size: 12px;
@@ -280,6 +455,31 @@
 .message-count {
   font-size: 12px;
   color: #9ca3af;
+}
+
+/* Toast 알림 */
+.toast-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #374151;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 /* 채팅 상세 */

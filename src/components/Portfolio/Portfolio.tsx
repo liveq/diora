@@ -5,7 +5,8 @@ import './Portfolio.css';
 interface PortfolioItem {
   id: string;
   category: string;
-  src: string;
+  thumbnailSrc: string;
+  fullSrc: string;
   alt: string;
 }
 
@@ -20,8 +21,9 @@ const Portfolio: React.FC = () => {
   const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([]);
   const [filteredItems, setFilteredItems] = useState<PortfolioItem[]>([]);
   const [selectedImage, setSelectedImage] = useState<PortfolioItem | null>(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(true);
-  
+
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -37,29 +39,55 @@ const Portfolio: React.FC = () => {
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const categoryParam = searchParams.get('category');
-    
+
     if (categoryParam && categories.some(cat => cat.id === categoryParam)) {
       setSelectedCategory(categoryParam);
     }
   }, [location.search, categories]);
 
-  // 포트폴리오 이미지 로드
+  // 포트폴리오 이미지 로드 - 썸네일과 풀사이즈 구분
   useEffect(() => {
-    const loadPortfolioItems = () => {
+    const loadPortfolioItems = async () => {
       const items: PortfolioItem[] = [];
       const imageCategories = ['search', 'goods', 'apparel', 'pc'];
-      
-      imageCategories.forEach(category => {
+
+      for (const category of imageCategories) {
         for (let i = 1; i <= 6; i++) {
-          items.push({
-            id: `${category}_${i}`,
-            category,
-            src: `/portfolio/${category}/${category}_${i}.svg`,
-            alt: `${category} 포트폴리오 ${i}`
-          });
+          const baseName = `${category}_${i}`;
+
+          // WebP 지원 확인
+          const supportsWebP = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = 1;
+            canvas.height = 1;
+            return canvas.toDataURL('image/webp').indexOf('image/webp') === 0;
+          };
+
+          const format = supportsWebP() ? 'webp' : 'jpg';
+
+          // 썸네일과 풀사이즈 경로 설정
+          const thumbnailSrc = `/portfolio/thumbnails/${category}/${baseName}.${format}`;
+          const fullSrc = `/portfolio/full/${category}/${baseName}.${format}`;
+
+          // 이미지 존재 확인 (썸네일 기준)
+          try {
+            const response = await fetch(thumbnailSrc, { method: 'HEAD' });
+            if (response.ok) {
+              items.push({
+                id: baseName,
+                category,
+                thumbnailSrc,
+                fullSrc,
+                alt: `${category} 포트폴리오 ${i}`
+              });
+            }
+          } catch {
+            // 이미지가 없으면 건너뛰기
+            continue;
+          }
         }
-      });
-      
+      }
+
       // 랜덤 순서로 섞기
       const shuffledItems = [...items].sort(() => Math.random() - 0.5);
       setPortfolioItems(shuffledItems);
@@ -80,7 +108,7 @@ const Portfolio: React.FC = () => {
 
   const handleCategoryChange = (categoryId: string) => {
     setSelectedCategory(categoryId);
-    
+
     // URL 업데이트
     if (categoryId === 'all') {
       navigate('/portfolio', { replace: true });
@@ -91,6 +119,8 @@ const Portfolio: React.FC = () => {
 
   const openLightbox = (item: PortfolioItem) => {
     setSelectedImage(item);
+    const index = filteredItems.findIndex(i => i.id === item.id);
+    setCurrentImageIndex(index);
     document.body.style.overflow = 'hidden';
   };
 
@@ -98,6 +128,42 @@ const Portfolio: React.FC = () => {
     setSelectedImage(null);
     document.body.style.overflow = 'unset';
   };
+
+  const navigateImage = (direction: 'prev' | 'next') => {
+    if (!filteredItems.length) return;
+
+    let newIndex = currentImageIndex;
+    if (direction === 'prev') {
+      newIndex = currentImageIndex === 0 ? filteredItems.length - 1 : currentImageIndex - 1;
+    } else {
+      newIndex = currentImageIndex === filteredItems.length - 1 ? 0 : currentImageIndex + 1;
+    }
+
+    setCurrentImageIndex(newIndex);
+    setSelectedImage(filteredItems[newIndex]);
+  };
+
+  // 키보드 이벤트 처리
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!selectedImage) return;
+
+      switch (e.key) {
+        case 'Escape':
+          closeLightbox();
+          break;
+        case 'ArrowLeft':
+          navigateImage('prev');
+          break;
+        case 'ArrowRight':
+          navigateImage('next');
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedImage, currentImageIndex, filteredItems]);
 
   const randomizeOrder = () => {
     const shuffled = [...filteredItems].sort(() => Math.random() - 0.5);
@@ -138,7 +204,7 @@ const Portfolio: React.FC = () => {
               </button>
             ))}
           </div>
-          
+
           <button className="randomize-btn" onClick={randomizeOrder}>
             <span className="randomize-icon">🎲</span>
             랜덤 정렬
@@ -160,7 +226,7 @@ const Portfolio: React.FC = () => {
             >
               <div className="item-image-wrapper">
                 <img
-                  src={item.src}
+                  src={item.thumbnailSrc}
                   alt={item.alt}
                   className="item-image"
                   loading="lazy"
@@ -193,15 +259,43 @@ const Portfolio: React.FC = () => {
             <button className="lightbox-close" onClick={closeLightbox}>
               ✕
             </button>
+
+            {/* 이전/다음 네비게이션 */}
+            <button
+              className="lightbox-nav lightbox-prev"
+              onClick={(e) => {
+                e.stopPropagation();
+                navigateImage('prev');
+              }}
+              aria-label="이전 이미지"
+            >
+              ‹
+            </button>
+
+            <button
+              className="lightbox-nav lightbox-next"
+              onClick={(e) => {
+                e.stopPropagation();
+                navigateImage('next');
+              }}
+              aria-label="다음 이미지"
+            >
+              ›
+            </button>
+
             <img
-              src={selectedImage.src}
+              src={selectedImage.fullSrc}
               alt={selectedImage.alt}
               className="lightbox-image"
             />
+
             <div className="lightbox-info">
               <h3>{selectedImage.alt}</h3>
               <span className="lightbox-category">
                 {categories.find(cat => cat.id === selectedImage.category)?.name}
+              </span>
+              <span className="lightbox-counter">
+                {currentImageIndex + 1} / {filteredItems.length}
               </span>
             </div>
           </div>

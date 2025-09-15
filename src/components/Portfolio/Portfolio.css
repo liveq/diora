@@ -277,6 +277,65 @@
   background: rgba(0, 0, 0, 0.8);
 }
 
+/* 네비게이션 버튼 */
+.lightbox-nav {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  font-size: 48px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 10001;
+}
+
+.lightbox-nav:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.lightbox-prev {
+  left: calc(5vw - 30px);
+  padding-right: 4px;
+}
+
+.lightbox-next {
+  right: calc(5vw - 30px);
+  padding-left: 4px;
+}
+
+/* 확장된 클릭 영역 */
+.lightbox-prev::before,
+.lightbox-next::before {
+  content: '';
+  position: absolute;
+  top: -90px;
+  bottom: -90px;
+  width: 120px;
+  z-index: -1;
+}
+
+/* 왼쪽 버튼 - 오른편으로 클릭 범위 확장 */
+.lightbox-prev::before {
+  left: -30px;
+  right: -90px;
+}
+
+/* 오른쪽 버튼 - 왼편으로 클릭 범위 확장 */
+.lightbox-next::before {
+  right: -30px;
+  left: -90px;
+}
+
 .lightbox-image {
   max-width: 100%;
   max-height: 70vh;
@@ -302,6 +361,13 @@
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  margin-right: 10px;
+}
+
+.lightbox-counter {
+  font-size: 14px;
+  color: var(--text-light);
+  opacity: 0.7;
 }
 
 /* 로딩 스타일 */
