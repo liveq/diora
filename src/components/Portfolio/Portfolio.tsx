@@ -52,15 +52,8 @@ const Portfolio: React.FC = () => {
       const items: PortfolioItem[] = [];
       const imageCategories = ['search', 'goods', 'apparel', 'pc'];
 
-      // WebP 지원 확인 (한 번만)
-      const supportsWebP = () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = 1;
-        canvas.height = 1;
-        return canvas.toDataURL('image/webp').indexOf('image/webp') === 0;
-      };
-
-      const format = supportsWebP() ? 'webp' : 'jpg';
+      // JPG 사용 (WebP 체크 제거로 요청 감소)
+      const format = 'jpg';
 
       // 이미지 존재 여부를 체크하지 않고 바로 추가 (모든 이미지가 있다고 가정)
       for (const category of imageCategories) {
