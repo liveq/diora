@@ -50,7 +50,7 @@ const ContactGoogleFormCompact: React.FC = () => {
       <div className="container">
         <h2 className="section-title">프로젝트 문의</h2>
         <p className="section-subtitle">
-          소량이라도, 특별한{'\u00A0'}요구사항이라도, 일단{'\u00A0'}문의해보세요
+          소량이라도, 특별한{'\u00A0'}요청사항이라도, 일단{'\u00A0'}문의해보세요
         </p>
         
         <button className="contact-btn" onClick={openModal}>
