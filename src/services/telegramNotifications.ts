@@ -84,12 +84,43 @@ ${status === 'active' ? '🆕 새 고객 문의입니다!' : ''}
   }
 };
 
-// 관리자 답장 알림 (고객에게)
+// 관리자 답장 알림 (텔레그램으로)
 export const sendAdminReplyNotification = async (
   chatId: string,
   adminMessage: string
 ): Promise<void> => {
-  // 이 기능은 추후 구현 가능
-  // 고객에게 브라우저 알림이나 UI 업데이트로 알림
-  console.log(`관리자 답장: ${adminMessage} (채팅 ID: ${chatId})`);
+  if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
+    console.error('텔레그램 설정이 없습니다.');
+    return;
+  }
+
+  const message = `
+📤 DIORA 관리자 답변
+
+💬 답변: ${adminMessage}
+👤 발신자: 관리자
+🕐 시간: ${new Date().toLocaleString('ko-KR')}
+📱 채팅 ID: ${chatId ? chatId.slice(-8) : 'N/A'}
+  `.trim();
+
+  try {
+    const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        chat_id: TELEGRAM_CHAT_ID,
+        text: message,
+        parse_mode: 'HTML'
+      })
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      console.error('텔레그램 알림 전송 실패:', error);
+    }
+  } catch (error) {
+    console.error('텔레그램 알림 오류:', error);
+  }
 };

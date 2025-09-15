@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { database, auth } from '../firebase';
 import { ref, onValue, push, update } from 'firebase/database';
 import { signInAnonymously } from 'firebase/auth';
 import './AdminPage.css';
 import { Chat, SessionStatus, Message } from '../types/chat.types';
-import { sendSessionNotification } from '../services/telegramNotifications';
+import { sendSessionNotification, sendAdminReplyNotification } from '../services/telegramNotifications';
 import { localStorageManager } from '../services/localStorageManager';
 
 type TabType = 'all' | SessionStatus | 'archived' | 'blocked';
@@ -18,6 +18,7 @@ const AdminPage: React.FC<AdminPageProps> = () => {
   const [activeTab, setActiveTab] = useState<TabType>('all');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Toast 알림 표시
   const showToast = (message: string) => {
@@ -96,6 +97,22 @@ const AdminPage: React.FC<AdminPageProps> = () => {
 
     initializeAdmin();
   }, []);
+
+  // 메시지 스크롤 자동 이동
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // 선택된 채팅이나 메시지가 변경될 때 스크롤
+  useEffect(() => {
+    if (selectedChat) {
+      const selectedChatData = chats.find(chat => chat.id === selectedChat);
+      if (selectedChatData) {
+        // 약간의 지연을 주어 DOM이 업데이트된 후 스크롤
+        setTimeout(scrollToBottom, 100);
+      }
+    }
+  }, [selectedChat, chats]);
 
   // 드롭다운 외부 클릭시 닫기
   useEffect(() => {
@@ -232,6 +249,10 @@ const AdminPage: React.FC<AdminPageProps> = () => {
     try {
       // Firebase에 메시지 전송 (자동으로 리스너가 받아서 UI 업데이트)
       await push(ref(database, `chats/${selectedChat}/messages`), messageData);
+
+      // 텔레그램으로 관리자 답변 알림 전송
+      await sendAdminReplyNotification(selectedChat, replyText);
+
       setReplyText('');
     } catch (error) {
       console.error('답장 전송 실패:', error);
@@ -362,91 +383,66 @@ const AdminPage: React.FC<AdminPageProps> = () => {
       )}
 
       <div className="admin-header">
-        <h1>DIORA 채팅 관리</h1>
-        <div className="admin-stats">
-          <span className="stat-item">
-            <span className="stat-label">전체:</span>
-            <span className="stat-value">{groupedChats.all.length}</span>
-          </span>
-          <span className="stat-item active">
-            <span className="stat-label">활성:</span>
-            <span className="stat-value">{groupedChats.active.length}</span>
-          </span>
-          <span className="stat-item inactive">
-            <span className="stat-label">비활성:</span>
-            <span className="stat-value">{groupedChats.inactive.length}</span>
-          </span>
-          <span className="stat-item closed">
-            <span className="stat-label">종료:</span>
-            <span className="stat-value">{groupedChats.closed.length}</span>
-          </span>
-          <span className="stat-item reopened">
-            <span className="stat-label">재개:</span>
-            <span className="stat-value">{groupedChats.reopened.length}</span>
-          </span>
-          <span className="stat-item archived">
-            <span className="stat-label">보관:</span>
-            <span className="stat-value">{groupedChats.archived.length}</span>
-          </span>
-          <span className="stat-item blocked">
-            <span className="stat-label">차단:</span>
-            <span className="stat-value">{groupedChats.blocked.length}</span>
-          </span>
-        </div>
-      </div>
+        <h1>
+          <a href="https://diora.co.kr" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
+            DIORA
+          </a>
+          {' '}채팅 관리
+        </h1>
 
-      {/* 탭 네비게이션 */}
-      <div className="admin-tabs">
-        <div className="admin-tab-list">
-          <button
-            className={`admin-tab-button ${activeTab === 'all' ? 'active' : ''}`}
-            onClick={() => setActiveTab('all')}
-          >
-            전체
-            <span className="admin-tab-badge">{groupedChats.all.length}</span>
-          </button>
-          <button
-            className={`admin-tab-button ${activeTab === 'active' ? 'active' : ''}`}
-            onClick={() => setActiveTab('active')}
-          >
-            🟢 활성
-            <span className="admin-tab-badge">{groupedChats.active.length}</span>
-          </button>
-          <button
-            className={`admin-tab-button ${activeTab === 'inactive' ? 'active' : ''}`}
-            onClick={() => setActiveTab('inactive')}
-          >
-            🟡 비활성
-            <span className="admin-tab-badge">{groupedChats.inactive.length}</span>
-          </button>
-          <button
-            className={`admin-tab-button ${activeTab === 'closed' ? 'active' : ''}`}
-            onClick={() => setActiveTab('closed')}
-          >
-            🔴 종료
-            <span className="admin-tab-badge">{groupedChats.closed.length}</span>
-          </button>
-          <button
-            className={`admin-tab-button ${activeTab === 'reopened' ? 'active' : ''}`}
-            onClick={() => setActiveTab('reopened')}
-          >
-            🟠 재개
-            <span className="admin-tab-badge">{groupedChats.reopened.length}</span>
-          </button>
-          <button
-            className={`admin-tab-button ${activeTab === 'archived' ? 'active' : ''}`}
-            onClick={() => setActiveTab('archived')}
-          >
-            📁 보관함
-            <span className="admin-tab-badge">{groupedChats.archived.length}</span>
-          </button>
-          <button
-            className={`admin-tab-button ${activeTab === 'blocked' ? 'active' : ''}`}
-            onClick={() => setActiveTab('blocked')}
-          >
-            🚫 차단
-            <span className="admin-tab-badge">{groupedChats.blocked.length}</span>
-          </button>
+        {/* 탭 네비게이션 - 헤더 내부로 이동 */}
+        <div className="admin-tabs">
+          <div className="admin-tab-list">
+            <button
+              className={`admin-tab-button ${activeTab === 'all' ? 'active' : ''}`}
+              onClick={() => setActiveTab('all')}
+            >
+              전체
+              <span className="admin-tab-badge">{groupedChats.all.length}</span>
+            </button>
+            <button
+              className={`admin-tab-button ${activeTab === 'active' ? 'active' : ''}`}
+              onClick={() => setActiveTab('active')}
+            >
+              활성
+              <span className="admin-tab-badge">{groupedChats.active.length}</span>
+            </button>
+            <button
+              className={`admin-tab-button ${activeTab === 'inactive' ? 'active' : ''}`}
+              onClick={() => setActiveTab('inactive')}
+            >
+              비활성
+              <span className="admin-tab-badge">{groupedChats.inactive.length}</span>
+            </button>
+            <button
+              className={`admin-tab-button ${activeTab === 'closed' ? 'active' : ''}`}
+              onClick={() => setActiveTab('closed')}
+            >
+              종료
+              <span className="admin-tab-badge">{groupedChats.closed.length}</span>
+            </button>
+            <button
+              className={`admin-tab-button ${activeTab === 'reopened' ? 'active' : ''}`}
+              onClick={() => setActiveTab('reopened')}
+            >
+              재개
+              <span className="admin-tab-badge">{groupedChats.reopened.length}</span>
+            </button>
+            <button
+              className={`admin-tab-button ${activeTab === 'archived' ? 'active' : ''}`}
+              onClick={() => setActiveTab('archived')}
+            >
+              보관
+              <span className="admin-tab-badge">{groupedChats.archived.length}</span>
+            </button>
+            <button
+              className={`admin-tab-button ${activeTab === 'blocked' ? 'active' : ''}`}
+              onClick={() => setActiveTab('blocked')}
+            >
+              차단
+              <span className="admin-tab-badge">{groupedChats.blocked.length}</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -533,7 +529,7 @@ const AdminPage: React.FC<AdminPageProps> = () => {
         {selectedChatData ? (
           <div className="chat-detail">
             <div className="chat-detail-header">
-              <div className="chat-detail-title">
+              <div className="chat-detail-left">
                 <h3>채팅 #{selectedChat?.slice(-8)}</h3>
                 <span className={`status-badge large ${selectedChatData.info.status}`}>
                   {getStatusIcon(selectedChatData.info.status)}
@@ -542,51 +538,34 @@ const AdminPage: React.FC<AdminPageProps> = () => {
                    selectedChatData.info.status === 'closed' ? '종료됨' : '재개됨'}
                 </span>
               </div>
-              {selectedChatData.info.status === 'active' && (
-                <button
-                  className="btn-close-chat"
-                  onClick={() => handleCloseChat(selectedChatData.id)}
-                >
-                  대화 종료
-                </button>
-              )}
-            </div>
 
-            <div className="chat-meta">
-              <div className="meta-item">
-                <span className="meta-label">시작 시간:</span>
-                <span className="meta-value">
-                  {selectedChatData.info.startTime ?
-                    new Date(selectedChatData.info.startTime).toLocaleString('ko-KR') : '-'}
-                </span>
-              </div>
-              {selectedChatData.info.endTime && (
-                <div className="meta-item">
-                  <span className="meta-label">종료 시간:</span>
+              <div className="chat-detail-center">
+                <div className="header-meta-item">
+                  <span className="meta-label">시작:</span>
                   <span className="meta-value">
-                    {new Date(selectedChatData.info.endTime).toLocaleString('ko-KR')}
+                    {selectedChatData.info.startTime ?
+                      formatTime(selectedChatData.info.startTime) : '-'}
                   </span>
                 </div>
-              )}
-              <div className="meta-item">
-                <span className="meta-label">마지막 활동:</span>
-                <span className="meta-value">
-                  {selectedChatData.info.lastActivity ?
-                    formatTime(selectedChatData.info.lastActivity) : '-'}
-                </span>
-              </div>
-              {selectedChatData.info.closeReason && (
-                <div className="meta-item">
-                  <span className="meta-label">종료 사유:</span>
+                <div className="header-meta-item">
+                  <span className="meta-label">마지막:</span>
                   <span className="meta-value">
-                    {selectedChatData.info.closeReason === 'manual' ? '고객 직접 종료' :
-                     selectedChatData.info.closeReason === 'beforeunload' ? '브라우저 창 닫음' :
-                     selectedChatData.info.closeReason === 'timeout' ? '비활성 타임아웃' :
-                     selectedChatData.info.closeReason === 'admin_close' ? '관리자 종료' :
-                     selectedChatData.info.closeReason}
+                    {selectedChatData.info.lastActivity ?
+                      formatTime(selectedChatData.info.lastActivity) : '-'}
                   </span>
                 </div>
-              )}
+              </div>
+
+              <div className="chat-detail-right">
+                {selectedChatData.info.status === 'active' && (
+                  <button
+                    className="btn-close-chat"
+                    onClick={() => handleCloseChat(selectedChatData.id)}
+                  >
+                    대화 종료
+                  </button>
+                )}
+              </div>
             </div>
 
             <div className="messages">
@@ -599,10 +578,15 @@ const AdminPage: React.FC<AdminPageProps> = () => {
                     {message.text}
                   </div>
                   <div className="message-time">
-                    {message.timestamp ? new Date(message.timestamp).toLocaleString('ko-KR') : ''}
+                    {message.timestamp ?
+                      new Date(message.timestamp).toLocaleTimeString('ko-KR', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      }) : ''}
                   </div>
                 </div>
               ))}
+              <div ref={messagesEndRef} />
             </div>
 
             {selectedChatData.info.status !== 'closed' && (
