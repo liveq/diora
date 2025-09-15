@@ -1,14 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './Chat.css';
-import './ChatSession.css';
 import { database, auth } from '../../firebase';
-import { ref, push, onValue } from 'firebase/database';
+import { ref, push, onValue, serverTimestamp } from 'firebase/database';
 import { signInAnonymously } from 'firebase/auth';
 import { startTelegramPolling, setActiveChat } from '../../services/telegramPolling';
 import { SessionManager } from '../../services/sessionManager';
 import { Message, SessionStatus } from '../../types/chat.types';
 import { sendSessionNotification } from '../../services/telegramNotifications';
-import { localStorageManager } from '../../services/localStorageManager';
 
 const Chat: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,9 +21,6 @@ const Chat: React.FC = () => {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const sessionManagerRef = useRef<SessionManager | null>(null);
-
-  // 현재 페이지가 admin 페이지인지 확인
-  const isAdminPage = window.location.pathname === '/admin';
 
   // 세션 매니저 초기화
   useEffect(() => {
@@ -98,15 +93,6 @@ const Chat: React.FC = () => {
     setActiveChat(newChatId);
     startTelegramPolling();
 
-    // localStorage에 채팅 정보 저장
-    localStorageManager.saveChat(newChatId, {
-      userId,
-      startTime: Date.now(),
-      status: 'active',
-      lastActivity: Date.now(),
-      sessionCount: 1
-    });
-
     // 환영 메시지
     const welcomeMessage: Message = {
       id: 'welcome',
@@ -115,7 +101,6 @@ const Chat: React.FC = () => {
       timestamp: Date.now()
     };
     setMessages([welcomeMessage]);
-    localStorageManager.addMessage(newChatId, welcomeMessage);
 
     // 세션 시작 알림
     await sendSessionNotification('active', 'session_start', newChatId);
@@ -160,12 +145,6 @@ const Chat: React.FC = () => {
           id: key,
           ...value
         }));
-
-        // Firebase 메시지를 localStorage에도 동기화
-        messagesList.forEach(msg => {
-          localStorageManager.addMessage(chatId, msg);
-        });
-
         setMessages(prev => [
           ...(prev.length > 0 && prev[0].id === 'welcome' ? [prev[0]] : []),
           ...messagesList.sort((a, b) => a.timestamp - b.timestamp)
@@ -180,20 +159,14 @@ const Chat: React.FC = () => {
   const sendMessage = async () => {
     if (!inputText.trim() || !chatId) return;
 
-    const messageData: Message = {
-      id: `msg_${Date.now()}`,
+    const messageData = {
       text: inputText,
       sender: 'customer',
-      timestamp: Date.now()
+      timestamp: serverTimestamp()
     };
 
     try {
-      // Firebase에 저장 시도
       await push(ref(database, `chats/${chatId}/messages`), messageData);
-
-      // localStorage에도 저장
-      localStorageManager.addMessage(chatId, messageData);
-
       setInputText('');
 
       // 비활성 타이머 리셋
@@ -203,8 +176,6 @@ const Chat: React.FC = () => {
       await sendSessionNotification('message', inputText, chatId);
     } catch (error) {
       console.error('메시지 전송 실패:', error);
-      // Firebase 실패해도 localStorage에는 저장
-      localStorageManager.addMessage(chatId, messageData);
     }
   };
 
@@ -213,10 +184,6 @@ const Chat: React.FC = () => {
     if (!chatId || !sessionManagerRef.current) return;
 
     await sessionManagerRef.current.closeSession('manual');
-
-    // localStorage 상태 업데이트
-    localStorageManager.updateChatStatus(chatId, 'closed', 'manual');
-
     await sendSessionNotification('closed', 'manual', chatId);
 
     setShowEndDialog(false);
@@ -230,11 +197,6 @@ const Chat: React.FC = () => {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
-
-  // admin 페이지에서는 채팅 버튼을 렌더링하지 않음
-  if (isAdminPage) {
-    return null;
-  }
 
   return (
     <>

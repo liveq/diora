@@ -1,0 +1,29 @@
+{
+  "rules": {
+    "chats": {
+      ".read": "auth != null",
+      ".write": "auth != null",
+      "$chatId": {
+        "messages": {
+          ".read": "auth != null",
+          ".write": "auth != null",
+          "$messageId": {
+            ".validate": "newData.hasChildren(['text', 'sender', 'timestamp'])"
+          }
+        },
+        "info": {
+          ".read": "auth != null",
+          ".write": "auth != null"
+        },
+        "statusHistory": {
+          ".read": "auth != null",
+          ".write": "auth != null"
+        }
+      }
+    },
+    "telegramUpdates": {
+      ".read": "auth != null",
+      ".write": true
+    }
+  }
+}

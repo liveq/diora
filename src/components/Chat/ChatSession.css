@@ -1,0 +1,308 @@
+/* 세션 관리 관련 추가 스타일 */
+
+/* 상태별 색상 정의 */
+:root {
+  --status-active: #28a745;
+  --status-inactive: #ffc107;
+  --status-closed: #dc3545;
+  --status-reopened: #17a2b8;
+}
+
+/* 채팅 헤더 액션 버튼 */
+.chat-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.chat-end-session {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.chat-end-session:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+.chat-end-session::before {
+  content: '🔚';
+  font-size: 14px;
+}
+
+/* 상태 표시 */
+.chat-status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.chat-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  position: relative;
+  animation: statusPulse 2s infinite;
+}
+
+.chat-status-dot.active {
+  background: var(--status-active);
+  box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.3);
+}
+
+.chat-status-dot.inactive {
+  background: var(--status-inactive);
+  box-shadow: 0 0 0 2px rgba(255, 193, 7, 0.3);
+}
+
+.chat-status-dot.closed {
+  background: var(--status-closed);
+  animation: none;
+}
+
+.chat-status-dot.reopened {
+  background: var(--status-reopened);
+  box-shadow: 0 0 0 2px rgba(23, 162, 184, 0.3);
+}
+
+.chat-status-text {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+@keyframes statusPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* 세션 재개 배너 */
+.session-resume-banner {
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  border: 1px solid #2196f3;
+  border-radius: 12px;
+  padding: 16px;
+  margin: 15px 20px;
+  animation: slideDown 0.3s ease;
+}
+
+.session-resume-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.session-resume-icon {
+  font-size: 20px;
+  color: #2196f3;
+}
+
+.session-resume-text {
+  flex: 1;
+}
+
+.session-resume-text h4 {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  color: #1976d2;
+  font-weight: 600;
+}
+
+.session-resume-text p {
+  margin: 0;
+  font-size: 12px;
+  color: #666;
+  line-height: 1.4;
+}
+
+.session-resume-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.session-resume-btn {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.session-resume-continue {
+  background: linear-gradient(135deg, #5D4E37 0%, #B8860B 100%);
+  color: white;
+}
+
+.session-resume-continue:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(93, 78, 55, 0.3);
+}
+
+.session-resume-new {
+  background: white;
+  color: #5D4E37;
+  border: 1px solid #5D4E37;
+}
+
+.session-resume-new:hover {
+  background: #f8f9fa;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 확인 다이얼로그 */
+.session-confirm-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10001;
+  animation: fadeIn 0.2s ease;
+}
+
+.session-confirm-dialog {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 320px;
+  margin: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: scaleIn 0.2s ease;
+}
+
+.session-confirm-dialog h4 {
+  margin: 0 0 12px 0;
+  color: #5D4E37;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.session-confirm-dialog p {
+  margin: 0 0 20px 0;
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.session-confirm-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.session-confirm-cancel {
+  padding: 10px 20px;
+  border: 1px solid #e0e0e0;
+  background: white;
+  color: #666;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.session-confirm-cancel:hover {
+  background: #f5f5f5;
+}
+
+.session-confirm-end {
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.session-confirm-end:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* 시스템 메시지 스타일 */
+.chat-message.system .chat-bubble {
+  background: #f0f0f0;
+  color: #666;
+  font-style: italic;
+  font-size: 13px;
+}
+
+/* 모바일 반응형 */
+@media (max-width: 480px) {
+  .chat-header-actions {
+    gap: 8px;
+  }
+
+  .chat-end-session {
+    padding: 6px 12px;
+    font-size: 11px;
+  }
+
+  .chat-end-session::before {
+    font-size: 12px;
+  }
+
+  .session-resume-banner {
+    margin: 10px 15px;
+    padding: 12px;
+  }
+
+  .session-resume-actions {
+    flex-direction: column;
+  }
+
+  .session-resume-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .session-confirm-dialog {
+    margin: 20px 15px;
+    padding: 20px;
+  }
+
+  .session-confirm-actions {
+    flex-direction: column-reverse;
+  }
+
+  .session-confirm-cancel,
+  .session-confirm-end {
+    width: 100%;
+    text-align: center;
+  }
+}
