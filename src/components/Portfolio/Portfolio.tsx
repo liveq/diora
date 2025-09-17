@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useDragScroll } from '../../hooks/useDragScroll';
 import './Portfolio.css';
 
 interface PortfolioItem {
@@ -27,6 +28,7 @@ const Portfolio: React.FC = () => {
 
   const location = useLocation();
   const navigate = useNavigate();
+  const { dragMoved } = useDragScroll();
 
   const categories: CategoryInfo[] = useMemo(() => [
     { id: 'all', name: '전체', color: '#333333' },

@@ -35,6 +35,11 @@ const Header: React.FC = () => {
     setIsMenuOpen(false);
   };
 
+  const navigateToFood = () => {
+    navigate('/food');
+    setIsMenuOpen(false);
+  };
+
   const navigateToHome = () => {
     navigate('/');
     setIsMenuOpen(false);
@@ -67,6 +72,11 @@ const Header: React.FC = () => {
             <li className="nav-item">
               <button onClick={navigateToPortfolio} className="nav-link">
                 포트폴리오
+              </button>
+            </li>
+            <li className="nav-item">
+              <button onClick={navigateToFood} className="nav-link">
+                식품관
               </button>
             </li>
             <li className="nav-item">

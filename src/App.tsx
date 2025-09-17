@@ -11,14 +11,18 @@ import FAQ from './components/FAQ/FAQ';
 import ContactGoogleFormCompact from './components/ContactGoogleFormCompact/ContactGoogleFormCompact';
 import Footer from './components/Footer/Footer';
 import PortfolioPage from './pages/PortfolioPage';
+import FoodPage from './pages/FoodPage';
 import AdminPageSecure from './pages/AdminPageSecure';
 import ScrollToTop from './components/ScrollToTop';
 import Chat from './components/Chat/Chat';
 import TopButton from './components/TopButton/TopButton';
+import { useDragScroll } from './hooks/useDragScroll';
 
 function HomePage() {
+  const { dragMoved } = useDragScroll();
+
   return (
-    <>
+    <div className="home-page">
       <Header />
       <Hero />
       <Services />
@@ -27,7 +31,7 @@ function HomePage() {
       <FAQ />
       <ContactGoogleFormCompact />
       <Footer />
-    </>
+    </div>
   );
 }
 
@@ -43,6 +47,7 @@ function AppContent() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/portfolio" element={<PortfolioPage />} />
+        <Route path="/food" element={<FoodPage />} />
         <Route path="/diocs" element={<AdminPageSecure />} />
       </Routes>
       {/* /diocs 경로가 아닐 때만 Chat 컴포넌트와 TopButton 렌더링 */}

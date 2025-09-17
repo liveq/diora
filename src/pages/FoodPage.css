@@ -1,0 +1,569 @@
+/* 기존 DIORA 스타일 상속 */
+.food-page {
+  padding-top: 80px;
+  min-height: 100vh;
+  /* 텍스트 선택 방지 */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* 드래그 중일 때 */
+body.dragging {
+  cursor: grabbing !important;
+}
+
+body.dragging * {
+  cursor: grabbing !important;
+}
+
+/* 포트폴리오 아이템과 버튼은 포인터 커서 유지 */
+.portfolio-item,
+.hero-cta,
+button {
+  cursor: pointer !important;
+}
+
+/* 히어로 섹션 - Hero 컴포넌트 스타일 재사용 */
+.food-hero {
+  padding: 100px 20px;
+  background: linear-gradient(135deg, #8B7355 0%, #6B5A45 100%);
+  color: white;
+  text-align: center;
+}
+
+.food-hero .hero-title {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.food-hero .title-part-1 {
+  color: white;
+}
+
+.food-hero .title-part-2 {
+  color: #FFD700;
+}
+
+.food-hero .hero-subtitle {
+  font-size: 1.25rem;
+  margin-bottom: 30px;
+  color: rgba(255, 255, 255, 0.98);
+  line-height: 1.8;
+  animation: fadeInUp 0.8s ease-out;
+  font-weight: 500;
+}
+
+.hero-badges {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-bottom: 30px;
+  animation: fadeInUp 1s ease-out;
+}
+
+.badge {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.food-hero .hero-cta {
+  background-color: white;
+  color: #8B7355;
+  border: none;
+  padding: 15px 40px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  animation: fadeInUp 1.2s ease-out;
+}
+
+.food-hero .hero-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* 김치 섹션 */
+.kimchi-section {
+  padding: 80px 20px;
+  background: white;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  color: #333;
+  text-align: center;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.section-subtitle {
+  font-size: 1.1rem;
+  color: #666;
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.kimchi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.kimchi-grid > :nth-child(4),
+.kimchi-grid > :nth-child(5) {
+  grid-column: span 1;
+}
+
+.kimchi-grid > :nth-child(4) {
+  grid-column-start: 1;
+}
+
+/* 포트폴리오 아이템 - 기존 Portfolio 스타일 */
+.portfolio-item {
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.portfolio-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+}
+
+.portfolio-image {
+  position: relative;
+  width: 100%;
+  padding-bottom: 100%;
+  overflow: hidden;
+  background: #f5f5f5;
+}
+
+.portfolio-image img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.portfolio-item:hover .portfolio-image img {
+  transform: scale(1.05);
+}
+
+.portfolio-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(139, 115, 85, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.portfolio-item:hover .portfolio-overlay {
+  opacity: 1;
+}
+
+.overlay-text {
+  color: white;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.portfolio-info {
+  padding: 20px;
+}
+
+.portfolio-info h3 {
+  font-size: 1.3rem;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.portfolio-info p {
+  font-size: 0.95rem;
+  color: #666;
+  line-height: 1.6;
+}
+
+/* 공장 섹션 */
+.factory-section {
+  padding: 80px 20px;
+  background: #f8f8f8;
+}
+
+.factory-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+/* 클로징 섹션 */
+.closing-section {
+  padding: 100px 20px;
+  background: linear-gradient(135deg, #6B5A45 0%, #8B7355 100%);
+  color: white;
+  text-align: center;
+}
+
+.closing-title {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.closing-subtitle {
+  font-size: 1.1rem;
+  margin-bottom: 30px;
+  opacity: 0.95;
+  line-height: 1.8;
+}
+
+.closing-section .hero-cta {
+  background-color: white;
+  color: #8B7355;
+  border: none;
+  padding: 15px 40px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.closing-section .hero-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* 라이트박스 모달 - Portfolio와 동일한 스타일 */
+.lightbox-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.95);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  animation: fadeIn 0.3s ease;
+}
+
+.lightbox-content {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  animation: slideUp 0.3s ease;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 18px;
+  cursor: pointer;
+  z-index: 1001;
+  transition: background 0.3s ease;
+}
+
+.lightbox-close:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.lightbox-nav {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  font-size: 46px;
+  font-weight: 300;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  z-index: 10;
+  backdrop-filter: blur(4px);
+}
+
+.lightbox-nav:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.lightbox-prev {
+  left: calc(50% - 450px);
+  padding-right: 4px;
+}
+
+.lightbox-next {
+  right: calc(50% - 450px);
+  padding-left: 4px;
+}
+
+/* 확장된 클릭 영역 - 버튼 크기의 2배 */
+.lightbox-prev::before,
+.lightbox-next::before {
+  content: '';
+  position: absolute;
+  top: -60px;  /* 버튼이 60px이므로 위아래로 60px씩 확장 */
+  bottom: -60px;
+  left: -60px;
+  right: -60px;
+  z-index: -1;
+}
+
+.lightbox-image {
+  max-width: 100%;
+  max-height: 70vh;
+  width: auto;
+  height: auto;
+  display: block;
+}
+
+.lightbox-info {
+  padding: 20px;
+  text-align: center;
+}
+
+.lightbox-info h3 {
+  font-size: 20px;
+  color: var(--primary-black);
+  margin-bottom: 8px;
+}
+
+.lightbox-category {
+  font-size: 14px;
+  color: var(--text-light);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-right: 10px;
+}
+
+.lightbox-counter {
+  font-size: 14px;
+  color: var(--text-light);
+  opacity: 0.7;
+}
+
+/* Google Form 모달 - 기존 Hero 스타일 */
+.form-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.4s ease;
+}
+
+.form-modal .modal-content {
+  width: 90%;
+  max-width: 900px;
+  max-height: 90vh;
+  background: white;
+  border-radius: 16px;
+  position: relative;
+  overflow: hidden;
+  animation: slideUp 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(184, 134, 11, 0.1);
+}
+
+.form-modal .close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(26, 26, 26, 0.9);
+  color: white;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  font-weight: 300;
+}
+
+.form-modal .close-btn:hover {
+  background: #000;
+  transform: scale(1.05);
+}
+
+.form-modal .modal-header {
+  padding: 30px 30px 20px;
+  text-align: center;
+  border-bottom: 1px solid #e0e0e0;
+  background: linear-gradient(135deg, #f8f8f8 0%, #ffffff 100%);
+}
+
+.form-modal .modal-header h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
+}
+
+.form-modal .modal-header p {
+  font-size: 16px;
+  color: #666;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.form-modal .modal-body {
+  flex: 1;
+  overflow: hidden;
+}
+
+.form-container {
+  width: 100%;
+  height: 100%;
+}
+
+.google-form-iframe {
+  width: 100%;
+  height: 600px;
+  border: none;
+}
+
+/* 애니메이션 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 반응형 */
+@media (max-width: 1024px) {
+  .kimchi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .factory-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .food-hero .hero-title {
+    font-size: 2rem;
+  }
+
+  .food-hero .hero-subtitle {
+    font-size: 1rem;
+  }
+
+  .hero-badges {
+    flex-wrap: wrap;
+  }
+
+  .kimchi-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .factory-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .section-title {
+    font-size: 1.8rem;
+  }
+
+  .closing-title {
+    font-size: 1.5rem;
+  }
+
+  .modal-navigation {
+    bottom: 10px;
+  }
+
+  .modal-info {
+    bottom: 60px;
+    padding: 10px 20px;
+  }
+
+  .modal-info h3 {
+    font-size: 1.2rem;
+  }
+
+  .modal-info p {
+    font-size: 0.9rem;
+  }
+}

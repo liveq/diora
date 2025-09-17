@@ -20,6 +20,12 @@ html {
   scroll-behavior: smooth;
 }
 
+/* 드래그 중일 때 스크롤 애니메이션 정지 */
+html.dragging,
+body.dragging {
+  scroll-behavior: auto !important;
+}
+
 body {
   font-family: 'Noto Sans KR', sans-serif;
   color: var(--text-dark);
@@ -29,6 +35,23 @@ body {
   word-wrap: break-word;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* 메인페이지 텍스트 선택 방지 및 드래그 커서 */
+.home-page {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* 드래그 중일 때 커서 스타일 */
+body.dragging {
+  cursor: grabbing !important;
+}
+
+body.dragging * {
+  cursor: grabbing !important;
 }
 
 .App {
