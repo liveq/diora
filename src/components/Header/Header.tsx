@@ -31,12 +31,30 @@ const Header: React.FC = () => {
   };
 
   const navigateToPortfolio = () => {
-    navigate('/portfolio');
+    if (location.pathname === '/portfolio') {
+      // 이미 포트폴리오 페이지에 있으면 페이지 상단으로 스크롤 후 새로고침
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setTimeout(() => {
+        navigate('/portfolio', { replace: false });
+        window.location.reload();
+      }, 300);
+    } else {
+      navigate('/portfolio');
+    }
     setIsMenuOpen(false);
   };
 
   const navigateToFood = () => {
-    navigate('/food');
+    if (location.pathname === '/food') {
+      // 이미 식품관 페이지에 있으면 페이지 상단으로 스크롤 후 새로고침
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setTimeout(() => {
+        navigate('/food', { replace: false });
+        window.location.reload();
+      }, 300);
+    } else {
+      navigate('/food');
+    }
     setIsMenuOpen(false);
   };
 
@@ -49,7 +67,15 @@ const Header: React.FC = () => {
     <header className="header">
       <div className="container">
         <nav className="nav">
-          <div className="logo" onClick={navigateToHome}>
+          <div
+            className="logo"
+            onClick={navigateToHome}
+            style={{
+              fontWeight: 900,
+              fontSize: '36px',
+              fontFamily: "'Noto Sans KR', sans-serif"
+            }}
+          >
             DIORA
           </div>
           

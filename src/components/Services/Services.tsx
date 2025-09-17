@@ -36,11 +36,21 @@ const Services: React.FC = () => {
       title: '리퍼브 PC 전문',
       description: '최소 수량 제한 없이, 원하는 대로 제작합니다',
       category: 'pc'
+    },
+    {
+      icon: 'FOOD',
+      title: '식품관 김치 도매',
+      description: 'HACCP 인증 시설에서 생산하는\n외식업계\u00A0전문\u00A0김치\u00A0납품',
+      category: 'food'
     }
   ];
 
   const handleServiceClick = (category: string) => {
-    navigate(`/portfolio?category=${category}`);
+    if (category === 'food') {
+      navigate('/food');
+    } else {
+      navigate(`/portfolio?category=${category}`);
+    }
   };
 
   return (

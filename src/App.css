@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap&subset=korean');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;900&display=swap&subset=korean');
 
 :root {
   --primary-white: #FFFFFF;
@@ -8,6 +8,8 @@
   --text-light: #666666;
   --background-light: #F8F8F8;
   --border-light: #E0E0E0;
+  --logo-font-weight: 900;
+  --heading-font-weight: 700;
 }
 
 * {
@@ -66,7 +68,7 @@ body.dragging * {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-weight: 700;
+  font-weight: var(--heading-font-weight);
   line-height: 1.2;
   margin-bottom: 1rem;
 }

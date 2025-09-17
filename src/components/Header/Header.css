@@ -17,12 +17,22 @@
   height: 80px;
 }
 
-.logo {
-  font-size: 28px;
-  font-weight: 700;
+.header .nav .logo {
+  font-size: 36px !important;
+  font-weight: 900 !important;
   color: var(--accent-gold);
   cursor: pointer;
-  letter-spacing: 1px;
+  letter-spacing: 2px;
+  transition: transform 0.2s ease;
+  display: inline-block;
+  font-family: 'Noto Sans KR', sans-serif !important;
+  line-height: 1;
+  -webkit-font-weight: 900 !important;
+  font-variation-settings: 'wght' 900 !important;
+}
+
+.header .nav .logo:hover {
+  transform: scale(1.05);
 }
 
 .nav-menu {

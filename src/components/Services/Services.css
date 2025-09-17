@@ -22,9 +22,28 @@
 
 .services-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 30px;
   margin-top: 60px;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* 첫 번째 줄 - 3개 카드 */
+.services-grid .service-card:nth-child(1),
+.services-grid .service-card:nth-child(2),
+.services-grid .service-card:nth-child(3) {
+  grid-column: span 2;
+}
+
+/* 두 번째 줄 - 2개 카드 중앙 정렬 */
+.services-grid .service-card:nth-child(4) {
+  grid-column: 2 / span 2;
+}
+
+.services-grid .service-card:nth-child(5) {
+  grid-column: 4 / span 2;
 }
 
 .service-card {
@@ -61,6 +80,10 @@
 
 .service-card:nth-child(4) .service-icon {
   animation-delay: 1.5s;
+}
+
+.service-card:nth-child(5) .service-icon {
+  animation-delay: 2s;
 }
 
 .service-title {
@@ -131,6 +154,22 @@
   }
 }
 
+@media (max-width: 1024px) {
+  .services-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .services-grid .service-card {
+    grid-column: span 1 !important;
+  }
+
+  .services-grid .service-card:nth-child(5) {
+    grid-column: 1 / span 2 !important;
+    max-width: 50%;
+    margin: 0 auto;
+  }
+}
+
 @media (max-width: 768px) {
   .services {
     padding: 60px 0;
@@ -147,7 +186,15 @@
 
   .services-grid {
     grid-template-columns: 1fr;
-    gap: 30px;
+    gap: 20px;
+  }
+
+  .services-grid .service-card {
+    grid-column: span 1 !important;
+  }
+
+  .services-grid .service-card:nth-child(5) {
+    max-width: 100%;
   }
 
   .service-card {
