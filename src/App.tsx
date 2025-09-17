@@ -33,7 +33,10 @@ function HomePage() {
 
 function AppContent() {
   const location = useLocation();
-  const isAdminPage = location.pathname === '/diocs';
+  const isAdminPage = location.pathname.toLowerCase() === '/diocs';
+
+  console.log('Current path:', location.pathname);
+  console.log('Is admin page:', isAdminPage);
 
   return (
     <div className="App">
