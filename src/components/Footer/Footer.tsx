@@ -27,13 +27,14 @@ const Footer: React.FC = () => {
           <div className="footer-links">
             <h4 className="footer-title">Quick Links</h4>
             <ul className="footer-nav">
-              <li><a href="#hero">홈</a></li>
-              <li><a href="#services">서비스</a></li>
-              <li><a href="#process">프로세스</a></li>
+              <li><a href="/#hero">홈</a></li>
+              <li><a href="/#services">서비스</a></li>
+              <li><a href="/#process">프로세스</a></li>
               <li><a href="/portfolio">포트폴리오</a></li>
-              <li><a href="#about">회사소개</a></li>
-              <li><a href="#faq">FAQ</a></li>
-              <li><a href="#contact">문의하기</a></li>
+              <li><a href="/food">식품관</a></li>
+              <li><a href="/#about">회사소개</a></li>
+              <li><a href="/#faq">FAQ</a></li>
+              <li><a href="/#contact-google-form">문의하기</a></li>
             </ul>
           </div>
         </div>
