@@ -21,8 +21,6 @@
   color: var(--text-light);
   line-height: 1.8;
   margin-bottom: 40px;
-  word-break: keep-all;
-  word-wrap: break-word;
 }
 
 .features-list {
@@ -59,16 +57,12 @@
   font-weight: 600;
   color: var(--primary-black);
   margin-bottom: 5px;
-  white-space: nowrap;
-  word-break: keep-all;
 }
 
 .feature-description {
   font-size: 14px;
   color: var(--text-light);
   line-height: 1.6;
-  word-break: keep-all;
-  word-wrap: break-word;
 }
 
 .about-visual {
@@ -152,6 +146,21 @@
     padding: 60px 0;
   }
 
+  .container {
+    padding: 0 20px;
+  }
+
+  .about-content {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    padding: 0;
+  }
+
+  .about-text {
+    max-width: 100%;
+    overflow: hidden;
+  }
+
   .about-title {
     font-size: 28px;
   }
@@ -162,7 +171,6 @@
 
   .feature-title {
     font-size: 16px;
-    white-space: normal;
   }
 
   .feature-description {

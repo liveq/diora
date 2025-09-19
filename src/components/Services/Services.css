@@ -181,18 +181,28 @@
   }
 
   .services-grid {
-    grid-template-columns: 1fr;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
     gap: var(--grid-gap-sm);
     max-width: 100%;
+    padding: 0 var(--spacing-lg);
   }
 
   .services-grid .service-card {
-    grid-column: span 1 !important;
+    grid-column: 1 !important;
+    width: 100%;
+    max-width: none !important;
+    margin: 0 !important;
   }
 
+  .services-grid .service-card:nth-child(1),
+  .services-grid .service-card:nth-child(2),
+  .services-grid .service-card:nth-child(3),
+  .services-grid .service-card:nth-child(4),
   .services-grid .service-card:nth-child(5) {
-    max-width: 100%;
-    margin: 0;
+    grid-column: 1 !important;
+    width: 100%;
+    max-width: none !important;
   }
 
   .service-card {
