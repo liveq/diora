@@ -54,14 +54,17 @@ const FAQ: React.FC = () => {
               key={index} 
               className={`faq-item ${openIndex === index ? 'open' : ''}`}
             >
-              <button 
-                className="faq-question"
-                onClick={() => toggleFAQ(index)}
-                aria-expanded={openIndex === index}
-              >
-                <span>{item.question}</span>
-                <span className="faq-icon">{openIndex === index ? '−' : '+'}</span>
-              </button>
+              <div className="faq-question-wrapper">
+                <div className="faq-question-text">{item.question}</div>
+                <button
+                  className="faq-toggle-btn"
+                  onClick={() => toggleFAQ(index)}
+                  aria-expanded={openIndex === index}
+                  aria-label={openIndex === index ? '답변 닫기' : '답변 열기'}
+                >
+                  <span className="faq-icon">{openIndex === index ? '−' : '+'}</span>
+                </button>
+              </div>
               {openIndex === index && (
                 <div className="faq-answer">
                   <p>{item.answer}</p>

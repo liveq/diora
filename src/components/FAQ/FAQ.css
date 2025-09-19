@@ -25,24 +25,50 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.faq-question {
-  width: 100%;
-  padding: 20px 25px;
-  background: none;
-  border: none;
-  text-align: left;
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--primary-black);
-  cursor: pointer;
+.faq-question-wrapper {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  transition: all 0.3s ease;
+  padding: 20px 25px;
 }
 
-.faq-question:hover {
+.faq-question-text {
+  flex: 1;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--primary-black);
+  transition: color 0.3s ease;
+  /* 텍스트 영역은 드래그 가능 */
+  user-select: text;
+  cursor: default;
+}
+
+.faq-item:hover .faq-question-text {
   color: var(--accent-gold);
+}
+
+.faq-toggle-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  margin-left: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+  /* 버튼 영역만 클릭 가능 */
+  flex-shrink: 0;
+}
+
+.faq-toggle-btn:hover {
+  background-color: rgba(184, 134, 11, 0.1);
+}
+
+.faq-toggle-btn:focus {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 2px;
 }
 
 .faq-icon {
@@ -86,9 +112,17 @@
     padding: 60px 0;
   }
 
-  .faq-question {
-    font-size: 15px;
+  .faq-question-wrapper {
     padding: 18px 20px;
+  }
+
+  .faq-question-text {
+    font-size: 15px;
+  }
+
+  .faq-toggle-btn {
+    padding: 6px;
+    margin-left: 15px;
   }
 
   .faq-answer {
