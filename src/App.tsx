@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import './App.css';
 import Header from './components/Header/Header';
@@ -20,6 +20,11 @@ import { useDragScroll } from './hooks/useDragScroll';
 
 function HomePage() {
   const { dragMoved } = useDragScroll();
+
+  // 새로고침 시 최상단으로 이동
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <div className="home-page">
