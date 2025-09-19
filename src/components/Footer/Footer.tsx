@@ -34,7 +34,7 @@ const Footer: React.FC = () => {
               <li><a href="/food">식품관</a></li>
               <li><a href="/#about">회사소개</a></li>
               <li><a href="/#faq">FAQ</a></li>
-              <li><a href="/#contact-google-form">문의하기</a></li>
+              <li><a href="/#contact-compact">문의하기</a></li>
             </ul>
           </div>
         </div>
