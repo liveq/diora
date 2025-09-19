@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- 메인 페이지 (최우선) -->
+  <url>
+    <loc>https://diora.co.kr/</loc>
+    <lastmod>2025-09-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- 포트폴리오 페이지 (중요) -->
+  <url>
+    <loc>https://diora.co.kr/portfolio</loc>
+    <lastmod>2025-09-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- 포트폴리오 카테고리별 -->
+  <url>
+    <loc>https://diora.co.kr/portfolio?category=search</loc>
+    <lastmod>2025-09-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://diora.co.kr/portfolio?category=goods</loc>
+    <lastmod>2025-09-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://diora.co.kr/portfolio?category=apparel</loc>
+    <lastmod>2025-09-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://diora.co.kr/portfolio?category=pc</loc>
+    <lastmod>2025-09-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Food 페이지 -->
+  <url>
+    <loc>https://diora.co.kr/food</loc>
+    <lastmod>2025-09-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+</urlset>
