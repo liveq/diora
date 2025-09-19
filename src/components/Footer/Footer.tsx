@@ -17,7 +17,7 @@ const Footer: React.FC = () => {
           
           <div className="footer-contact">
             <h4 className="footer-title">Contact</h4>
-            <p className="footer-text">이메일: diora.service@gmail.com</p>
+            <p className="footer-text">이메일: dio@diora.co.kr</p>
             <p className="footer-text">영업시간: 평일 09:00 - 18:00</p>
             <p className="footer-text">주소: (06140) 서울특별시 강남구 봉은사로30길 68, 6층-S8호</p>
             <p className="footer-text">사업자번호: 247-25-01917</p>
