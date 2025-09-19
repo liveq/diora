@@ -1,5 +1,6 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDragScroll } from '../../hooks/useDragScroll';
 import './Services.css';
 
 interface ServiceCard {
@@ -11,8 +12,7 @@ interface ServiceCard {
 
 const Services: React.FC = () => {
   const navigate = useNavigate();
-  const isDraggingRef = useRef(false);
-  const startPosRef = useRef({ x: 0, y: 0 });
+  const { dragMoved } = useDragScroll();
 
   const services: ServiceCard[] = [
     {
@@ -47,27 +47,9 @@ const Services: React.FC = () => {
     }
   ];
 
-  const handleMouseDown = (e: React.MouseEvent) => {
-    isDraggingRef.current = false;
-    startPosRef.current = { x: e.clientX, y: e.clientY };
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    const deltaX = Math.abs(e.clientX - startPosRef.current.x);
-    const deltaY = Math.abs(e.clientY - startPosRef.current.y);
-
-    // 5픽셀 이상 움직이면 드래그로 판정
-    if (deltaX > 5 || deltaY > 5) {
-      isDraggingRef.current = true;
-    }
-  };
-
   const handleServiceClick = (category: string) => {
-    // 드래그 중이었으면 클릭 무시
-    if (isDraggingRef.current) {
-      isDraggingRef.current = false;
-      return;
-    }
+    // 드래그 중이었으면 클릭 무시 (FoodPage와 동일한 방식)
+    if (dragMoved) return;
 
     if (category === 'food') {
       navigate('/food');
@@ -89,8 +71,6 @@ const Services: React.FC = () => {
             <div
               key={index}
               className="service-card"
-              onMouseDown={handleMouseDown}
-              onMouseMove={handleMouseMove}
               onClick={() => handleServiceClick(service.category)}
             >
               <div className="service-icon">{service.icon}</div>
