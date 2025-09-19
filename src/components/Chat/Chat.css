@@ -1,121 +1,112 @@
 /* 플로팅 버튼 */
 .chat-floating-button {
   position: fixed;
-  bottom: 30px;
-  right: 30px;
+  bottom: var(--spacing-xl);
+  right: var(--spacing-xl);
   width: auto;
-  padding: 15px 25px;
+  padding: var(--spacing-md) var(--spacing-lg);
   background: linear-gradient(135deg, #5D4E37 0%, #B8860B 100%);
-  color: white;
+  color: var(--primary-white);
   border: none;
-  border-radius: 50px;
+  border-radius: var(--radius-full);
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 10px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  transition: all 0.3s ease;
-  z-index: 9999;
-  font-size: 16px;
-  font-weight: 600;
+  gap: var(--spacing-sm);
+  box-shadow: var(--shadow-lg);
+  transition: all var(--transition-base);
+  z-index: var(--z-floating-button);
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-semibold);
 }
 
 .chat-floating-button:hover {
   transform: translateY(-3px);
-  box-shadow: 0 6px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-xl);
 }
 
 .chat-icon {
-  font-size: 24px;
+  font-size: var(--text-2xl);
 }
 
 .chat-badge {
-  animation: pulse 2s infinite;
+  animation: diora-pulse 2s infinite;
 }
 
-@keyframes pulse {
-  0% { opacity: 1; }
-  50% { opacity: 0.7; }
-  100% { opacity: 1; }
-}
+/* 애니메이션은 variables.css에서 통합 관리 */
 
 /* 채팅 컨테이너 */
 .chat-container {
   position: fixed;
-  bottom: 30px;
-  right: 30px;
+  bottom: var(--spacing-xl);
+  right: var(--spacing-xl);
   width: 380px;
   height: 500px;
-  background: white;
-  border-radius: 20px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  background: var(--primary-white);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
   display: flex;
   flex-direction: column;
-  z-index: 10000;
-  animation: slideUp 0.3s ease;
+  z-index: var(--z-chat);
+  animation: diora-slide-up var(--transition-base);
 }
 
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+/* 애니메이션은 variables.css에서 통합 관리 */
 
 /* 헤더 */
 .chat-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
+  padding: var(--spacing-lg);
   background: linear-gradient(135deg, #5D4E37 0%, #B8860B 100%);
-  color: white;
-  border-radius: 20px 20px 0 0;
+  color: var(--primary-white);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
 }
 
 .chat-header-info h3 {
   margin: 0;
-  font-size: 18px;
-  font-weight: 600;
+  font-size: var(--text-lg);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
 }
 
 .chat-status {
-  font-size: 12px;
+  font-size: var(--text-xs);
   display: flex;
   align-items: center;
-  gap: 5px;
-  margin-top: 5px;
+  gap: var(--spacing-xs);
+  margin-top: var(--spacing-xs);
+  opacity: 0.9;
 }
 
 .chat-close {
   background: none;
   border: none;
-  color: white;
-  font-size: 24px;
+  color: var(--primary-white);
+  font-size: var(--text-2xl);
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: transform var(--transition-fast);
   padding: 0;
   width: 30px;
   height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: var(--radius-sm);
 }
 
 .chat-close:hover {
   transform: scale(1.1);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 /* 메시지 영역 */
 .chat-messages {
   flex: 1;
   overflow-y: auto;
-  padding: 20px;
-  background: #f8f9fa;
+  padding: var(--spacing-lg);
+  background: var(--background-light);
 }
 
 .chat-messages::-webkit-scrollbar {
@@ -123,13 +114,17 @@
 }
 
 .chat-messages::-webkit-scrollbar-thumb {
-  background: #cbd5e0;
-  border-radius: 3px;
+  background: var(--border-light);
+  border-radius: var(--radius-sm);
+}
+
+.chat-messages::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 /* 메시지 버블 */
 .chat-message {
-  margin-bottom: 15px;
+  margin-bottom: var(--spacing-md);
   display: flex;
   flex-direction: column;
 }
@@ -144,47 +139,49 @@
 
 .chat-bubble {
   max-width: 70%;
-  padding: 12px 16px;
-  border-radius: 18px;
-  font-size: 14px;
-  line-height: 1.4;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-sm);
+  line-height: var(--line-height-normal);
   word-break: keep-all;
+  word-wrap: break-word;
 }
 
 .chat-message.customer .chat-bubble {
   background: linear-gradient(135deg, #5D4E37 0%, #B8860B 100%);
-  color: white;
-  border-bottom-right-radius: 4px;
+  color: var(--primary-white);
+  border-bottom-right-radius: var(--radius-xs);
 }
 
 .chat-message.admin .chat-bubble {
-  background: white;
-  color: #2d3748;
-  border-bottom-left-radius: 4px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  background: var(--primary-white);
+  color: var(--text-dark);
+  border-bottom-left-radius: var(--radius-xs);
+  box-shadow: var(--shadow-sm);
 }
 
 .chat-time {
-  font-size: 11px;
-  color: #718096;
-  margin-top: 4px;
-  padding: 0 5px;
+  font-size: var(--text-xs);
+  color: var(--text-light);
+  margin-top: var(--spacing-xs);
+  padding: 0 var(--spacing-xs);
+  opacity: 0.8;
 }
 
 /* 타이핑 애니메이션 */
 .chat-bubble.typing {
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 15px 20px;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-md) var(--spacing-lg);
 }
 
 .chat-bubble.typing span {
   width: 8px;
   height: 8px;
-  background: #718096;
-  border-radius: 50%;
-  animation: typing 1.4s infinite;
+  background: var(--text-light);
+  border-radius: var(--radius-full);
+  animation: diora-typing 1.4s infinite;
 }
 
 .chat-bubble.typing span:nth-child(2) {
@@ -195,63 +192,74 @@
   animation-delay: 0.4s;
 }
 
-@keyframes typing {
-  0%, 60%, 100% {
-    transform: translateY(0);
-  }
-  30% {
-    transform: translateY(-10px);
-  }
-}
+/* 타이핑 애니메이션은 variables.css에서 관리 */
 
 /* 입력 영역 */
 .chat-input-container {
   display: flex;
-  padding: 20px;
-  background: white;
-  border-top: 1px solid #e2e8f0;
-  border-radius: 0 0 20px 20px;
-  gap: 10px;
+  padding: var(--spacing-lg);
+  background: var(--primary-white);
+  border-top: 1px solid var(--border-light);
+  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+  gap: var(--spacing-sm);
 }
 
 .chat-input {
   flex: 1;
-  padding: 12px 16px;
-  border: 1px solid #e2e8f0;
-  border-radius: 25px;
-  font-size: 14px;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-full);
+  font-size: var(--text-sm);
   outline: none;
-  transition: border-color 0.2s;
+  transition: border-color var(--transition-fast);
+  font-family: inherit;
 }
 
 .chat-input:focus {
-  border-color: #5D4E37;
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.1);
 }
 
 .chat-send {
-  padding: 12px 24px;
+  padding: var(--spacing-sm) var(--spacing-lg);
   background: linear-gradient(135deg, #5D4E37 0%, #B8860B 100%);
-  color: white;
+  color: var(--primary-white);
   border: none;
-  border-radius: 25px;
-  font-size: 14px;
-  font-weight: 600;
+  border-radius: var(--radius-full);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all var(--transition-fast);
+  min-width: 60px;
 }
 
 .chat-send:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(93, 78, 55, 0.4);
+  box-shadow: var(--shadow-md);
 }
 
 .chat-send:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  transform: none;
 }
 
-/* 모바일 반응형 */
-@media (max-width: 480px) {
+/* 태블릿 반응형 */
+@media (max-width: 1023px) {
+  .chat-container {
+    width: 360px;
+    height: 480px;
+  }
+
+  .chat-floating-button {
+    bottom: var(--spacing-lg);
+    right: var(--spacing-lg);
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+}
+
+/* 대형 모바일/폴드 반응형 */
+@media (max-width: 767px) {
   .chat-container {
     width: 100%;
     height: 100%;
@@ -259,18 +267,103 @@
     right: 0;
     border-radius: 0;
     max-height: 100vh;
+    animation: diora-slide-in-right var(--transition-base);
   }
 
   .chat-header {
     border-radius: 0;
+    padding: var(--spacing-md) var(--spacing-lg);
   }
 
   .chat-input-container {
     border-radius: 0;
+    padding: var(--spacing-md) var(--spacing-lg);
+  }
+
+  .chat-messages {
+    padding: var(--spacing-md) var(--spacing-lg);
   }
 
   .chat-floating-button {
-    bottom: 20px;
-    right: 20px;
+    bottom: var(--spacing-lg);
+    right: var(--spacing-lg);
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  .chat-icon {
+    font-size: var(--text-xl);
+  }
+}
+
+/* 일반 모바일 반응형 */
+@media (max-width: 413px) {
+  .chat-floating-button {
+    bottom: var(--spacing-md);
+    right: var(--spacing-md);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--text-sm);
+  }
+
+  .chat-header {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  .chat-input-container {
+    padding: var(--spacing-sm) var(--spacing-md);
+    gap: var(--spacing-xs);
+  }
+
+  .chat-messages {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  .chat-bubble {
+    max-width: 80%;
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+
+  .chat-input {
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+
+  .chat-send {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    min-width: 50px;
+  }
+}
+
+/* 소형 모바일 반응형 */
+@media (max-width: 374px) {
+  .chat-floating-button {
+    bottom: var(--spacing-sm);
+    right: var(--spacing-sm);
+    padding: var(--spacing-xs);
+    font-size: var(--text-xs);
+  }
+
+  .chat-floating-button .chat-text {
+    display: none;
+  }
+
+  .chat-header-info h3 {
+    font-size: var(--text-base);
+  }
+
+  .chat-status {
+    font-size: 10px;
+  }
+
+  .chat-bubble {
+    max-width: 85%;
+    font-size: 12px;
+  }
+
+  .chat-input {
+    font-size: 12px;
+  }
+
+  .chat-send {
+    font-size: 12px;
+    min-width: 40px;
   }
 }
