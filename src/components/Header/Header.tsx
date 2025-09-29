@@ -59,7 +59,13 @@ const Header: React.FC = () => {
   };
 
   const navigateToHome = () => {
-    navigate('/');
+    if (location.pathname === '/') {
+      // 이미 홈에 있으면 최상단으로 스크롤
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      // 다른 페이지에서는 홈으로 이동
+      navigate('/');
+    }
     setIsMenuOpen(false);
   };
 

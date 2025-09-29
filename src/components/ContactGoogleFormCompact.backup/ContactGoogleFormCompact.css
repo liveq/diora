@@ -37,36 +37,6 @@
   box-shadow: 0 10px 20px rgba(184, 134, 11, 0.3);
 }
 
-/* 버튼 그룹 - 세로 배치 */
-.button-group {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  align-items: center;
-}
-
-/* 특별한 혜택 버튼 */
-.benefit-btn {
-  display: inline-block;
-  position: relative;
-  padding: 11px 28px;
-  background: transparent;
-  color: #333;
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 400;
-  border: 1px solid #333;
-  border-radius: 50px;
-  transition: all 0.2s ease;
-  cursor: pointer;
-}
-
-.benefit-btn:hover {
-  background: #333;
-  color: white;
-  transform: translateY(-1px);
-}
-
 /* Beautiful Custom Modal Styles */
 .form-modal {
   position: fixed;
