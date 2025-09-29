@@ -29,10 +29,10 @@ const Process: React.FC = () => {
       icon: "📊"
     },
     {
-      step: "04",
-      title: "계약 및 착수",
-      description: "계약 확정 후 즉시 작업에 착수합니다",
-      icon: "✍️"
+      step: "06",
+      title: "납품 및 AS",
+      description: "검수 후 안전하게 배송하고 AS를 제공합니다",
+      icon: "📦"
     },
     {
       step: "05",
@@ -41,10 +41,10 @@ const Process: React.FC = () => {
       icon: "⚙️"
     },
     {
-      step: "06",
-      title: "납품 및 AS",
-      description: "검수 후 안전하게 배송하고 AS를 제공합니다",
-      icon: "📦"
+      step: "04",
+      title: "계약 및 착수",
+      description: "계약 확정 후 즉시 작업에 착수합니다",
+      icon: "✍️"
     }
   ];
 

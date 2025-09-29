@@ -86,7 +86,7 @@
 }
 
 /* Left arrows for bottom row (between cards) */
-.process-card:nth-child(4)::before {
+.process-card:nth-child(6)::before {
   content: '←';
   position: absolute;
   left: -30px;
