@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { database, auth } from '../firebase';
-import { ref, onValue, push, update } from 'firebase/database';
+import { database, auth } from '../firebase';  // 채팅용
+import { contactDatabase, contactAuth } from '../firebaseContact';  // 문의용
+import { ref, onValue, push, update, set } from 'firebase/database';
 import { signInAnonymously } from 'firebase/auth';
 import './AdminPage.css';
+import './AdminInquiry.css';
 import { Chat, SessionStatus, Message } from '../types/chat.types';
 import { sendSessionNotification, sendAdminReplyNotification } from '../services/telegramNotifications';
 import { localStorageManager } from '../services/localStorageManager';
@@ -12,12 +14,19 @@ type TabType = 'all' | SessionStatus | 'archived' | 'blocked';
 interface AdminPageProps {}
 
 const AdminPage: React.FC<AdminPageProps> = () => {
+  {/* TODO: mode state 추가 */}
+  const [mode, setMode] = useState<'chat' | 'inquiry'>('chat');
   const [chats, setChats] = useState<Chat[]>([]);
   const [selectedChat, setSelectedChat] = useState<string | null>(null);
   const [replyText, setReplyText] = useState('');
   const [activeTab, setActiveTab] = useState<TabType>('all');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [inquiries, setInquiries] = useState<any[]>([]);
+  const [selectedInquiry, setSelectedInquiry] = useState<any>(null);
+  const [consultationNotes, setConsultationNotes] = useState<Array<{text: string, lastSaved?: Date}>>([{text: ''}]);
+  const [isSaving, setIsSaving] = useState<number | null>(null);
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Toast 알림 표시
@@ -26,7 +35,228 @@ const AdminPage: React.FC<AdminPageProps> = () => {
     setTimeout(() => setToastMessage(null), 3000);
   };
 
+  // 모드 전환 함수
+  const switchMode = (newMode: 'chat' | 'inquiry', event: React.MouseEvent) => {
+    event.preventDefault();
+    setMode(newMode);
+    if (newMode === 'inquiry') {
+      loadInquiries();
+    }
+  };
+
+  // 문의 데이터 로드
+  const loadInquiries = async () => {
+    try {
+      // 인증 없이 바로 데이터 로드 (공개 읽기 권한)
+      console.log('Loading inquiries from Contact Firebase...');
+      const inquiriesRef = ref(contactDatabase, 'inquiries');
+      onValue(inquiriesRef, (snapshot) => {
+        const data = snapshot.val();
+        console.log('Firebase inquiries data:', data);
+        if (data) {
+          const inquiriesList = Object.entries(data).map(([id, inquiry]: [string, any]) => ({
+            id,
+            ...inquiry,
+            createdAt: inquiry.createdAt ? new Date(inquiry.createdAt) : new Date()
+          })).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+          console.log('Processed inquiries:', inquiriesList);
+          setInquiries(inquiriesList);
+        } else {
+          console.log('No inquiries found in Firebase');
+          setInquiries([]);
+        }
+      }, (error) => {
+        console.error('Error loading inquiries:', error);
+        // 에러 발생시 REST API로 직접 시도
+        console.log('Trying direct REST API...');
+        fetch('https://diora-contact-default-rtdb.firebaseio.com/inquiries.json')
+          .then(res => res.json())
+          .then(data => {
+            if (data) {
+              const inquiriesList = Object.entries(data).map(([id, inquiry]: [string, any]) => ({
+                id,
+                ...inquiry,
+                createdAt: inquiry.createdAt ? new Date(inquiry.createdAt) : new Date()
+              })).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+              console.log('REST API inquiries:', inquiriesList);
+              setInquiries(inquiriesList);
+            }
+          })
+          .catch(restError => console.error('REST API error:', restError));
+      });
+    } catch (error) {
+      console.error('Failed to load inquiries:', error);
+    }
+  };
+
+  // 문의 유형 레이블
+  const getInquiryTypeLabel = (type: string) => {
+    const labels: Record<string, string> = {
+      'partnership': '제휴/협력',
+      'investment': '투자문의',
+      'press': '언론/홍보',
+      'general': '일반문의',
+      'other': '기타'
+    };
+    return labels[type] || type;
+  };
+
+  // 날짜 포맷
+  const formatInquiryDate = (timestamp: number | Date) => {
+    const date = timestamp instanceof Date ? timestamp : new Date(timestamp);
+    const now = new Date();
+    const diff = now.getTime() - date.getTime();
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+    if (days === 0) {
+      return '오늘';
+    } else if (days === 1) {
+      return '어제';
+    } else if (days < 7) {
+      return `${days}일 전`;
+    } else {
+      return date.toLocaleDateString('ko-KR');
+    }
+  };
+
+  // 상태 배지
+  const getStatusBadge = (status: string) => {
+    const badges: Record<string, { text: string; className: string }> = {
+      'pending': { text: '대기중', className: 'status-pending' },
+      'processing': { text: '처리중', className: 'status-processing' },
+      'completed': { text: '완료', className: 'status-completed' }
+    };
+    const badge = badges[status] || { text: status, className: 'status-default' };
+    return <span className={`status-badge ${badge.className}`}>{badge.text}</span>;
+  };
+
+  // 상담 메모 로드
+  useEffect(() => {
+    if (!selectedInquiry) {
+      setConsultationNotes([{text: ''}]);
+      return;
+    }
+
+    // 문의 변경 시 초기화
+    setConsultationNotes([{text: ''}]);
+    setIsSaving(null);
+
+    const notesRef = ref(contactDatabase, `consultationNotes/${selectedInquiry.id}`);
+    const unsubscribe = onValue(notesRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data && data.notes && Array.isArray(data.notes)) {
+        const loadedNotes = data.notes.map((note: any) => {
+          if (typeof note === 'string') {
+            return {text: note};
+          }
+          return {
+            text: note.text || '',
+            lastSaved: note.lastSaved ? new Date(note.lastSaved) : undefined
+          };
+        });
+        setConsultationNotes(loadedNotes.length > 0 ? loadedNotes : [{text: ''}]);
+      } else {
+        setConsultationNotes([{text: ''}]);
+      }
+    }, (error) => {
+      console.error('Error loading consultation notes:', error);
+      setConsultationNotes([{text: ''}]);
+    });
+
+    return () => {
+      unsubscribe();
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+    };
+  }, [selectedInquiry?.id]);
+
+  // 상담 메모 저장 (디바운싱)
+  const saveConsultationNote = async (index: number, text: string) => {
+    if (!selectedInquiry) return;
+
+    // 기존 타이머 취소
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+
+    // 빈 텍스트는 저장하지 않음
+    if (!text.trim()) {
+      return;
+    }
+
+    setIsSaving(index);
+
+    // 1초 후 자동 저장
+    saveTimeoutRef.current = setTimeout(async () => {
+      try {
+        const now = new Date();
+        const updatedNotes = [...consultationNotes];
+        // 현재 수정된 메모만 타임스탬프 업데이트, 다른 메모들은 기존 타임스탬프 유지
+        updatedNotes[index] = {text, lastSaved: now};
+
+        const notesRef = ref(contactDatabase, `consultationNotes/${selectedInquiry.id}`);
+        const dataToSave = {
+          notes: updatedNotes.map((note, i) => ({
+            text: note.text || '',
+            lastSaved: i === index ? now.toISOString() : (note.lastSaved ?
+              (typeof note.lastSaved === 'string' ? note.lastSaved : note.lastSaved.toISOString()) : null)
+          })),
+          inquiryId: selectedInquiry.id,
+          lastUpdated: now.toISOString()
+        };
+
+        console.log('Saving consultation notes:', dataToSave);
+        await set(notesRef, dataToSave);
+
+        // 성공적으로 저장된 경우에만 상태 업데이트
+        setConsultationNotes(updatedNotes);
+        setIsSaving(null);
+        console.log('Consultation notes saved successfully');
+      } catch (error) {
+        console.error('Failed to save consultation note:', error);
+        setIsSaving(null);
+        alert('상담 메모 저장에 실패했습니다.');
+      }
+    }, 1000);
+  };
+
+  // 메모 필드 추가
+  const addNoteField = () => {
+    const newNotes = [...consultationNotes, {text: ''}];
+    setConsultationNotes(newNotes);
+  };
+
+  // 메모 필드 삭제
+  const removeNoteField = (index: number) => {
+    if (consultationNotes.length === 1) return; // 최소 1개는 유지
+    const newNotes = consultationNotes.filter((_, i) => i !== index);
+    setConsultationNotes(newNotes);
+  };
+
+  // 메모 내용 변경
+  const updateNote = (index: number, value: string) => {
+    const newNotes = [...consultationNotes];
+    newNotes[index] = {...newNotes[index], text: value};
+    setConsultationNotes(newNotes);
+
+    // 텍스트가 있을 때만 저장
+    if (value.trim()) {
+      saveConsultationNote(index, value);
+    }
+  };
+
   // 모든 채팅 불러오기 - Firebase 우선 사용
+  useEffect(() => {
+    // 모드가 inquiry일 때 문의 데이터 로드
+    if (mode === 'inquiry') {
+      console.log('Mode changed to inquiry, loading data...');
+      console.log('Chat auth state:', auth.currentUser);
+      console.log('Contact auth state:', contactAuth.currentUser);
+      loadInquiries();
+    }
+  }, [mode]);
+
   useEffect(() => {
     // 익명 로그인 후 Firebase 리스너 설정
     const initializeAdmin = async () => {
@@ -388,10 +618,14 @@ const AdminPage: React.FC<AdminPageProps> = () => {
             DIORA
           </a>
           {' '}채팅 관리
+          <div className="mode-toggle">
+            <button className={`mode-btn ${mode === 'chat' ? 'active' : ''}`} onClick={() => setMode('chat')}>채팅</button>
+            <button className={`mode-btn ${mode === 'inquiry' ? 'active' : ''}`} onClick={() => setMode('inquiry')}>문의</button>
+          </div>
         </h1>
 
         {/* 탭 네비게이션 - 헤더 내부로 이동 */}
-        <div className="admin-tabs">
+        <div className="admin-tabs" style={{ display: mode === 'chat' ? 'block' : 'none' }}>
           <div className="admin-tab-list">
             <button
               className={`admin-tab-button ${activeTab === 'all' ? 'active' : ''}`}
@@ -447,8 +681,195 @@ const AdminPage: React.FC<AdminPageProps> = () => {
       </div>
 
       <div className="admin-layout">
-        {/* 채팅 목록 */}
-        <div className="chat-list">
+        {mode === 'inquiry' ? (
+          /* 문의 모드 */
+          <>
+            {/* 문의 목록 */}
+            <div className="chat-list">
+              <div className="chat-list-header">
+                <h3>모든 문의</h3>
+                <span className="chat-count">{inquiries.length}개</span>
+              </div>
+              <div id="inquiryListContent">
+                {inquiries.length === 0 ? (
+                  <div className="no-chats">
+                    <p>문의가 없습니다</p>
+                  </div>
+                ) : (
+                  inquiries.map(inquiry => (
+                    <div
+                      key={inquiry.id}
+                      className={`inquiry-item ${inquiry.unread ? 'unread' : ''} ${selectedInquiry?.id === inquiry.id ? 'active' : ''}`}
+                      onClick={() => setSelectedInquiry(inquiry)}
+                    >
+                      <div className="inquiry-header">
+                        <div className="inquiry-company">{inquiry.company}</div>
+                        <div className="inquiry-date">{formatInquiryDate(inquiry.createdAt)}</div>
+                      </div>
+                      <div className="inquiry-meta">
+                        <div className="inquiry-name">{inquiry.name}</div>
+                        <div className="inquiry-type">{getInquiryTypeLabel(inquiry.inquiryType)}</div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+
+            {/* 문의 상세 */}
+            <div className="chat-detail">
+              {selectedInquiry ? (
+                <div id="inquiryDetailContent">
+                  <div className="detail-header">
+                    <div className="detail-company">{selectedInquiry.company}</div>
+                    <div className="detail-meta">
+                      <span>담당자: {selectedInquiry.name}</span>
+                      <span>접수일: {new Date(selectedInquiry.createdAt).toLocaleString('ko-KR')}</span>
+                    </div>
+                  </div>
+
+                  <div className="detail-grid" style={{gridTemplateColumns: '1fr 1fr 1fr'}}>
+                    <div className="detail-field">
+                      <div className="field-label">담당자</div>
+                      <div className="field-value">{selectedInquiry.name}</div>
+                    </div>
+                    <div className="detail-field">
+                      <div className="field-label">이메일</div>
+                      <div className="field-value">{selectedInquiry.email}</div>
+                    </div>
+                    <div className="detail-field">
+                      <div className="field-label">연락처</div>
+                      <div className="field-value">{selectedInquiry.phone}</div>
+                    </div>
+                    <div className="detail-field full-width">
+                      <div className="field-label">문의 내용</div>
+                      <div className="field-value">{selectedInquiry.content}</div>
+                    </div>
+                    {selectedInquiry.additionalRequest && (
+                      <div className="detail-field full-width">
+                        <div className="field-label">추가 요청사항</div>
+                        <div className="field-value">{selectedInquiry.additionalRequest}</div>
+                      </div>
+                    )}
+
+                    {/* 상담 메모 섹션 */}
+                    <div className="detail-field full-width">
+                      <div className="field-label">상담 메모</div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                        {consultationNotes.map((note, index) => (
+                          <div key={index} style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                            <div style={{
+                              minWidth: '180px',
+                              fontSize: '12px',
+                              color: isSaving === index ? '#f59e0b' : '#6b7280',
+                              paddingTop: '14px'
+                            }}>
+                              {isSaving === index ? '저장 중...' :
+                               note.lastSaved ? (() => {
+                                 const date = new Date(note.lastSaved);
+                                 const year = String(date.getFullYear()).slice(2);
+                                 const month = String(date.getMonth() + 1).padStart(2, '0');
+                                 const day = String(date.getDate()).padStart(2, '0');
+                                 const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+                                 const dayName = dayNames[date.getDay()];
+                                 const hours = String(date.getHours()).padStart(2, '0');
+                                 const minutes = String(date.getMinutes()).padStart(2, '0');
+                                 const seconds = String(date.getSeconds()).padStart(2, '0');
+                                 return `${year}.${month}.${day}(${dayName}) ${hours}:${minutes}:${seconds}`;
+                               })() : '저장 전'}
+                            </div>
+                            <textarea
+                              value={note.text}
+                              onChange={(e) => updateNote(index, e.target.value)}
+                              placeholder="상담 내용을 입력하세요..."
+                              style={{
+                                flex: 1,
+                                minHeight: '80px',
+                                padding: '12px',
+                                fontSize: '14px',
+                                border: '1px solid #e5e7eb',
+                                borderRadius: '8px',
+                                backgroundColor: '#f9fafb',
+                                resize: 'vertical',
+                                fontFamily: 'inherit',
+                                lineHeight: '1.5'
+                              }}
+                            />
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                              <button
+                                onClick={addNoteField}
+                                style={{
+                                  width: '32px',
+                                  height: '32px',
+                                  padding: '0',
+                                  fontSize: '18px',
+                                  fontWeight: 'bold',
+                                  color: '#10b981',
+                                  backgroundColor: '#d1fae5',
+                                  border: '1px solid #10b981',
+                                  borderRadius: '6px',
+                                  cursor: 'pointer',
+                                  transition: 'all 0.2s'
+                                }}
+                                onMouseEnter={(e) => {
+                                  e.currentTarget.style.backgroundColor = '#10b981';
+                                  e.currentTarget.style.color = 'white';
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.currentTarget.style.backgroundColor = '#d1fae5';
+                                  e.currentTarget.style.color = '#10b981';
+                                }}
+                              >
+                                +
+                              </button>
+                              {consultationNotes.length > 1 && (
+                                <button
+                                  onClick={() => removeNoteField(index)}
+                                  style={{
+                                    width: '32px',
+                                    height: '32px',
+                                    padding: '0',
+                                    fontSize: '18px',
+                                    fontWeight: 'bold',
+                                    color: '#ef4444',
+                                    backgroundColor: '#fee2e2',
+                                    border: '1px solid #ef4444',
+                                    borderRadius: '6px',
+                                    cursor: 'pointer',
+                                    transition: 'all 0.2s'
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    e.currentTarget.style.backgroundColor = '#ef4444';
+                                    e.currentTarget.style.color = 'white';
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.currentTarget.style.backgroundColor = '#fee2e2';
+                                    e.currentTarget.style.color = '#ef4444';
+                                  }}
+                                >
+                                  −
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              ) : (
+                <div className="no-selection" id="inquiryNoSelection">
+                  <p>문의를 선택해주세요</p>
+                </div>
+              )}
+            </div>
+          </>
+        ) : (
+          /* 채팅 모드 */
+          <>
+            {/* 채팅 목록 */}
+            <div className="chat-list">
           <div className="chat-list-header">
             <h3>{activeTab === 'all' ? '모든 대화' :
                 activeTab === 'active' ? '진행 중인 대화' :
@@ -616,6 +1037,8 @@ const AdminPage: React.FC<AdminPageProps> = () => {
           <div className="no-selection">
             <p>채팅을 선택해주세요</p>
           </div>
+        )}
+          </>
         )}
       </div>
     </div>

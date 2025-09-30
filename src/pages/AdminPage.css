@@ -20,6 +20,147 @@
   margin: 0;
   font-size: 24px;
   font-weight: 600;
+  display: inline-block;
+}
+
+/* 채팅/문의 토글 버튼 */
+.mode-toggle {
+  display: inline-flex;
+  gap: 0;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  padding: 2px;
+  margin-left: 20px;
+  vertical-align: middle;
+}
+
+.mode-btn {
+  padding: 5px 12px;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.mode-btn:hover {
+  color: white;
+}
+
+.mode-btn.active {
+  background: white;
+  color: #5D4E37;
+}
+
+/* 문의 목록 스타일 */
+.inquiry-item {
+  padding: 15px 20px;
+  border-bottom: 1px solid #e0e0e0;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: white;
+}
+
+.inquiry-item:hover {
+  background: #f8f9fa;
+}
+
+.inquiry-item.active {
+  background: #f0f8ff;
+  border-left: 3px solid #007bff;
+}
+
+.inquiry-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.inquiry-company {
+  font-weight: 600;
+  color: #333;
+}
+
+.inquiry-date {
+  font-size: 12px;
+  color: #999;
+}
+
+.inquiry-meta {
+  display: flex;
+  gap: 15px;
+  font-size: 13px;
+  color: #666;
+}
+
+.inquiry-name {
+  font-weight: 500;
+}
+
+.inquiry-type {
+  color: #999;
+}
+
+/* 문의 상세 스타일 */
+.inquiry-detail-content {
+  padding: 20px;
+}
+
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.detail-info {
+  margin-bottom: 30px;
+}
+
+.info-row {
+  margin-bottom: 15px;
+  display: flex;
+  gap: 10px;
+}
+
+.info-row .label {
+  font-weight: 600;
+  color: #666;
+  min-width: 80px;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-reply, .btn-complete, .btn-delete {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.btn-reply {
+  background: #007bff;
+  color: white;
+}
+
+.btn-complete {
+  background: #28a745;
+  color: white;
+}
+
+.btn-delete {
+  background: #dc3545;
+  color: white;
 }
 
 /* 통계 표시 */

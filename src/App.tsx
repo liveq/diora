@@ -42,10 +42,10 @@ function HomePage() {
 
 function AppContent() {
   const location = useLocation();
-  const isAdminPage = location.pathname.toLowerCase() === '/diocs';
+  const isDiocsPage = location.pathname.toLowerCase() === '/diocs';
 
   console.log('Current path:', location.pathname);
-  console.log('Is admin page:', isAdminPage);
+  console.log('Is diocs page:', isDiocsPage);
 
   return (
     <div className="App">
@@ -56,8 +56,8 @@ function AppContent() {
         <Route path="/diocs" element={<AdminPageSecure />} />
       </Routes>
       {/* /diocs 경로가 아닐 때만 Chat 컴포넌트와 TopButton 렌더링 */}
-      {!isAdminPage && <Chat />}
-      {!isAdminPage && <TopButton />}
+      {!isDiocsPage && <Chat />}
+      {!isDiocsPage && <TopButton />}
     </div>
   );
 }

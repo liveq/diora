@@ -26,3 +26,10 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 image-source/apparel/250915_*.png
+
+# Backup files
+/backup
+src/pages/*_backup.*
+
+# Temporary excluded files
+/temp_excluded
