@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>비즈니스 패키지 샘플 - YOUR BUSINESS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2c5aa0;
+            --primary-dark: #1e4080;
+            --primary-light: #e8f4f8;
+            --text-dark: #212121;
+            --text-light: #757575;
+            --bg-light: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+        }
+
+        /* 헤더 */
+        header {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 40px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-dark);
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        /* 히어로 섹션 */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 120px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        }
+
+        .hero h1 {
+            font-size: 52px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .hero p {
+            font-size: 22px;
+            margin-bottom: 40px;
+            opacity: 0.95;
+        }
+
+        .cta-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            position: relative;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 15px 40px;
+            background: white;
+            color: var(--primary-color);
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .cta-button.outline {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+
+        /* 서비스 섹션 */
+        .services {
+            padding: 100px 20px;
+            background: white;
+        }
+
+        .services h2 {
+            text-align: center;
+            font-size: 42px;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+        }
+
+        .services-subtitle {
+            text-align: center;
+            color: var(--text-light);
+            margin-bottom: 60px;
+            font-size: 18px;
+        }
+
+        .service-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        .service-card {
+            padding: 40px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-align: center;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(44, 90, 160, 0.15);
+        }
+
+        .service-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 25px;
+            background: var(--primary-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-size: 36px;
+        }
+
+        /* 포트폴리오 섹션 */
+        .portfolio {
+            padding: 100px 20px;
+            background: var(--bg-light);
+        }
+
+        .portfolio h2 {
+            text-align: center;
+            font-size: 42px;
+            margin-bottom: 60px;
+        }
+
+        .portfolio-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .portfolio-item {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .portfolio-item:hover {
+            transform: scale(1.05);
+        }
+
+        .portfolio-image {
+            height: 250px;
+            background: linear-gradient(135deg, var(--primary-light), var(--primary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: white;
+        }
+
+        .portfolio-info {
+            padding: 25px;
+        }
+
+        .portfolio-info h3 {
+            margin-bottom: 10px;
+            color: var(--text-dark);
+        }
+
+        .portfolio-info p {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        /* SNS 섹션 */
+        .social-section {
+            padding: 60px 20px;
+            background: white;
+            text-align: center;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .social-link {
+            width: 50px;
+            height: 50px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: transform 0.3s, background 0.3s;
+            font-size: 24px;
+        }
+
+        .social-link:hover {
+            transform: translateY(-5px);
+            background: var(--primary-dark);
+        }
+
+        /* Contact 섹션 */
+        .contact {
+            padding: 100px 20px;
+            background: var(--bg-light);
+        }
+
+        .contact-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+        }
+
+        .contact-form {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        /* Footer */
+        footer {
+            background: #2c3e50;
+            color: white;
+            padding: 50px 20px 30px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .footer-section p,
+        .footer-section ul {
+            color: rgba(255,255,255,0.8);
+            font-size: 14px;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .package-badge {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            z-index: 1000;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* 반응형 */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 36px; }
+            .nav-links { display: none; }
+            .cta-group { flex-direction: column; }
+            .contact-container { grid-template-columns: 1fr; }
+            .portfolio-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 패키지 표시 배지 -->
+    <div class="package-badge">비즈니스 패키지</div>
+
+    <!-- 헤더 -->
+    <header>
+        <nav>
+            <div class="logo">YOUR BUSINESS</div>
+            <ul class="nav-links">
+                <li><a href="#home">홈</a></li>
+                <li><a href="#services">서비스</a></li>
+                <li><a href="#portfolio">포트폴리오</a></li>
+                <li><a href="#about">회사소개</a></li>
+                <li><a href="#contact">문의하기</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- 히어로 섹션 -->
+    <section class="hero" id="home">
+        <h1>비즈니스의 새로운 기준</h1>
+        <p>혁신적인 솔루션으로 성공을 이끕니다</p>
+        <div class="cta-group">
+            <a href="#contact" class="cta-button">무료 상담 신청</a>
+            <a href="#portfolio" class="cta-button outline">포트폴리오 보기</a>
+        </div>
+    </section>
+
+    <!-- 서비스 섹션 -->
+    <section class="services" id="services">
+        <h2>전문 서비스</h2>
+        <p class="services-subtitle">고객의 성공이 우리의 성공입니다</p>
+        <div class="service-grid">
+            <div class="service-card">
+                <div class="service-icon">📊</div>
+                <h3>컨설팅</h3>
+                <p>전문가의 통찰력으로 비즈니스 전략을 수립합니다</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">💼</div>
+                <h3>솔루션</h3>
+                <p>맞춤형 솔루션으로 업무 효율을 극대화합니다</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">📈</div>
+                <h3>마케팅</h3>
+                <p>데이터 기반의 효과적인 마케팅 전략을 제공합니다</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 포트폴리오 섹션 -->
+    <section class="portfolio" id="portfolio">
+        <h2>포트폴리오</h2>
+        <div class="portfolio-grid">
+            <div class="portfolio-item">
+                <div class="portfolio-image">🏢</div>
+                <div class="portfolio-info">
+                    <h3>프로젝트 A</h3>
+                    <p>대기업 디지털 전환 프로젝트</p>
+                </div>
+            </div>
+            <div class="portfolio-item">
+                <div class="portfolio-image">🛍️</div>
+                <div class="portfolio-info">
+                    <h3>프로젝트 B</h3>
+                    <p>이커머스 플랫폼 구축</p>
+                </div>
+            </div>
+            <div class="portfolio-item">
+                <div class="portfolio-image">📱</div>
+                <div class="portfolio-info">
+                    <h3>프로젝트 C</h3>
+                    <p>모바일 앱 개발 및 런칭</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SNS 섹션 -->
+    <section class="social-section">
+        <h2>소셜 미디어</h2>
+        <p>다양한 채널에서 만나보세요</p>
+        <div class="social-links">
+            <a href="#" class="social-link">f</a>
+            <a href="#" class="social-link">📷</a>
+            <a href="#" class="social-link">▶</a>
+            <a href="#" class="social-link">B</a>
+        </div>
+    </section>
+
+    <!-- Contact 섹션 -->
+    <section class="contact" id="contact">
+        <div class="contact-container">
+            <div class="contact-form">
+                <h2>문의하기</h2>
+                <form>
+                    <div class="form-group">
+                        <label>이름</label>
+                        <input type="text" placeholder="이름을 입력하세요">
+                    </div>
+                    <div class="form-group">
+                        <label>이메일</label>
+                        <input type="email" placeholder="이메일을 입력하세요">
+                    </div>
+                    <div class="form-group">
+                        <label>메시지</label>
+                        <textarea rows="5" placeholder="문의 내용을 입력하세요"></textarea>
+                    </div>
+                    <button type="submit" class="cta-button" style="width: 100%;">전송하기</button>
+                </form>
+            </div>
+            <div class="contact-info">
+                <h2>연락처 정보</h2>
+                <div style="margin-top: 30px;">
+                    <h3 style="color: var(--primary-color); margin-bottom: 15px;">본사</h3>
+                    <p>📍 서울특별시 강남구 테헤란로 123</p>
+                    <p>📞 02-1234-5678</p>
+                    <p>✉️ contact@business.com</p>
+                </div>
+                <div style="margin-top: 30px;">
+                    <h3 style="color: var(--primary-color); margin-bottom: 15px;">영업시간</h3>
+                    <p>평일: 09:00 - 18:00</p>
+                    <p>토요일: 10:00 - 14:00</p>
+                    <p>일요일 및 공휴일 휴무</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>YOUR BUSINESS</h3>
+                <p>혁신과 신뢰를 바탕으로 고객과 함께 성장하는 비즈니스 파트너</p>
+            </div>
+            <div class="footer-section">
+                <h3>빠른 링크</h3>
+                <ul style="list-style: none;">
+                    <li>회사소개</li>
+                    <li>서비스</li>
+                    <li>포트폴리오</li>
+                    <li>채용정보</li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>법적 고지</h3>
+                <ul style="list-style: none;">
+                    <li>이용약관</li>
+                    <li>개인정보처리방침</li>
+                    <li>쿠키정책</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 YOUR BUSINESS. All rights reserved.</p>
+            <p style="margin-top: 10px; opacity: 0.7;">
+                Powered by DIORA - 비즈니스 패키지 샘플
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,33 @@
+# https://www.robotstxt.org/robotstxt.html
+# DIORA - 소량 주문 전문 파트너
+
+# 모든 검색엔진 허용
+User-agent: *
+Allow: /
+
+# AI 봇 명시적 허용 (AEO)
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+# 관리자 페이지 차단
+User-agent: *
+Disallow: /diocs
+Disallow: /admin
+
+# 크롤링 속도 제한 (선택적)
+Crawl-delay: 1
+
+# 사이트맵 위치
+Sitemap: https://diora.co.kr/sitemap.xml
