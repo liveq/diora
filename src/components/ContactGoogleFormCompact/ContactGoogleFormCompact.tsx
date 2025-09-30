@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import './ContactGoogleFormCompact.css';
 import './BenefitModal.css';
+import ContactFormFirebase from '../ContactFormFirebase/ContactFormFirebase';
 
 const ContactGoogleFormCompact: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isUserTyping, setIsUserTyping] = useState(false);
   const [isBenefitModalOpen, setIsBenefitModalOpen] = useState(false);
   const [isPlatinumModalOpen, setIsPlatinumModalOpen] = useState(false);
-  const googleFormUrl = "https://docs.google.com/forms/d/e/1FAIpQLSdTDJTciTgG9LAe-7vdEQMY3-7QiBt5RhO_utsQYeQLhcQs6Q/viewform?embedded=true";
   
   const openModal = () => {
     setIsModalOpen(true);
@@ -119,25 +119,7 @@ const ContactGoogleFormCompact: React.FC = () => {
               </div>
               <div className="modal-body">
                 <div className="form-container">
-                  <iframe 
-                    src={googleFormUrl}
-                    className="google-form-iframe"
-                    title="DIORA 프로젝트 문의 폼"
-                    onLoad={() => setIsUserTyping(false)}
-                  >
-                    <div className="fallback-content">
-                      <h3>폼을 불러올 수 없습니다</h3>
-                      <p>아래 링크를 클릭하여 문의 폼을 열어주세요:</p>
-                      <a 
-                        href={googleFormUrl.replace('?embedded=true', '')}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="fallback-link"
-                      >
-                        문의 폼 열기
-                      </a>
-                    </div>
-                  </iframe>
+                  <ContactFormFirebase />
                 </div>
               </div>
             </div>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Header from '../components/Header/Header';
 import Footer from '../components/Footer/Footer';
+import ContactFormFirebase from '../components/ContactFormFirebase/ContactFormFirebase';
 import { useDragScroll } from '../hooks/useDragScroll';
 import './FoodPage.css';
 
@@ -8,10 +9,8 @@ const FoodPage: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
   const [currentCategory, setCurrentCategory] = useState<'kimchi' | 'factory'>('kimchi');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isGoogleFormOpen, setIsGoogleFormOpen] = useState(false);
+  const [isContactFormOpen, setIsContactFormOpen] = useState(false);
   const { dragMoved } = useDragScroll();
-
-  const googleFormUrl = "https://docs.google.com/forms/d/e/1FAIpQLSdTDJTciTgG9LAe-7vdEQMY3-7QiBt5RhO_utsQYeQLhcQs6Q/viewform?embedded=true";
 
   // 김치 제품 데이터
   // 실제 이미지: kimchi_1=포기김치, kimchi_2=파김치, kimchi_3=갓김치, kimchi_4=깍두기, kimchi_5=총각김치
@@ -65,13 +64,13 @@ const FoodPage: React.FC = () => {
     setCurrentCategory(allImages[newIndex].category);
   };
 
-  const openGoogleForm = () => {
-    setIsGoogleFormOpen(true);
+  const openContactForm = () => {
+    setIsContactFormOpen(true);
     document.body.style.overflow = 'hidden';
   };
 
-  const closeGoogleForm = () => {
-    setIsGoogleFormOpen(false);
+  const closeContactForm = () => {
+    setIsContactFormOpen(false);
     document.body.style.overflow = 'unset';
   };
 
@@ -108,7 +107,7 @@ const FoodPage: React.FC = () => {
               <span className="badge">콜드체인 시스템</span>
               <span className="badge">B2B 전문</span>
             </div>
-            <button className="hero-cta" onClick={openGoogleForm}>
+            <button className="hero-cta" onClick={openContactForm}>
               문의하기
             </button>
           </div>
@@ -188,7 +187,7 @@ const FoodPage: React.FC = () => {
               최소 주문량, 배송 주기, 맞춤 포장 등<br />
               귀사의 요구사항에 맞춰 견적을 제공합니다
             </p>
-            <button className="hero-cta" onClick={openGoogleForm}>
+            <button className="hero-cta" onClick={openContactForm}>
               문의하기
             </button>
           </div>
@@ -250,11 +249,11 @@ const FoodPage: React.FC = () => {
           </div>
         )}
 
-        {/* Google Form 모달 */}
-        {isGoogleFormOpen && (
-          <div className="form-modal" onClick={closeGoogleForm}>
+        {/* Contact Form 모달 */}
+        {isContactFormOpen && (
+          <div className="form-modal" onClick={closeContactForm}>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-              <button className="close-btn" onClick={closeGoogleForm} title="닫기">
+              <button className="close-btn" onClick={closeContactForm} title="닫기">
                 ×
               </button>
               <div className="modal-header">
@@ -262,26 +261,7 @@ const FoodPage: React.FC = () => {
                 <p>소량이라도, 특별한 요청사항이라도 문의해주세요</p>
               </div>
               <div className="modal-body">
-                <div className="form-container">
-                  <iframe
-                    src={googleFormUrl}
-                    className="google-form-iframe"
-                    title="DIORA 프로젝트 문의 폼"
-                  >
-                    <div className="fallback-content">
-                      <h3>폼을 불러올 수 없습니다</h3>
-                      <p>아래 링크를 클릭하여 문의 폼을 열어주세요:</p>
-                      <a
-                        href={googleFormUrl.replace('?embedded=true', '')}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="fallback-link"
-                      >
-                        문의 폼 열기
-                      </a>
-                    </div>
-                  </iframe>
-                </div>
+                <ContactFormFirebase />
               </div>
             </div>
           </div>

@@ -25,8 +25,8 @@ const AdminPage: React.FC<AdminPageProps> = () => {
   const [inquiries, setInquiries] = useState<any[]>([]);
   const [selectedInquiry, setSelectedInquiry] = useState<any>(null);
   const [consultationNotes, setConsultationNotes] = useState<Array<{text: string, lastSaved?: Date}>>([{text: ''}]);
-  const [isSaving, setIsSaving] = useState<number | null>(null);
-  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [savingStates, setSavingStates] = useState<Map<number, boolean>>(new Map());
+  const saveTimeoutRefs = useRef<Map<number, NodeJS.Timeout>>(new Map());
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Toast 알림 표시
@@ -101,22 +101,18 @@ const AdminPage: React.FC<AdminPageProps> = () => {
     return labels[type] || type;
   };
 
-  // 날짜 포맷
+  // 날짜 포맷 - 접수일 표시
   const formatInquiryDate = (timestamp: number | Date) => {
     const date = timestamp instanceof Date ? timestamp : new Date(timestamp);
-    const now = new Date();
-    const diff = now.getTime() - date.getTime();
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+    const dayName = dayNames[date.getDay()];
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
 
-    if (days === 0) {
-      return '오늘';
-    } else if (days === 1) {
-      return '어제';
-    } else if (days < 7) {
-      return `${days}일 전`;
-    } else {
-      return date.toLocaleDateString('ko-KR');
-    }
+    return `${year}.${month}.${day}(${dayName}) ${hours}:${minutes}`;
   };
 
   // 상태 배지
@@ -139,7 +135,7 @@ const AdminPage: React.FC<AdminPageProps> = () => {
 
     // 문의 변경 시 초기화
     setConsultationNotes([{text: ''}]);
-    setIsSaving(null);
+    setSavingStates(new Map());
 
     const notesRef = ref(contactDatabase, `consultationNotes/${selectedInquiry.id}`);
     const unsubscribe = onValue(notesRef, (snapshot) => {
@@ -165,60 +161,102 @@ const AdminPage: React.FC<AdminPageProps> = () => {
 
     return () => {
       unsubscribe();
-      if (saveTimeoutRef.current) {
-        clearTimeout(saveTimeoutRef.current);
-      }
+      // 모든 타이머 정리
+      saveTimeoutRefs.current.forEach((timeout) => clearTimeout(timeout));
+      saveTimeoutRefs.current.clear();
     };
   }, [selectedInquiry?.id]);
 
-  // 상담 메모 저장 (디바운싱)
+  // 상담 메모 저장 (독립적 디바운싱 + 재시도 로직)
   const saveConsultationNote = async (index: number, text: string) => {
     if (!selectedInquiry) return;
 
-    // 기존 타이머 취소
-    if (saveTimeoutRef.current) {
-      clearTimeout(saveTimeoutRef.current);
+    // 해당 인덱스의 기존 타이머 취소
+    const existingTimeout = saveTimeoutRefs.current.get(index);
+    if (existingTimeout) {
+      clearTimeout(existingTimeout);
     }
 
     // 빈 텍스트는 저장하지 않음
     if (!text.trim()) {
+      setSavingStates(prev => {
+        const newStates = new Map(prev);
+        newStates.delete(index);
+        return newStates;
+      });
       return;
     }
 
-    setIsSaving(index);
+    // 해당 인덱스를 저장 중 상태로 설정
+    setSavingStates(prev => {
+      const newStates = new Map(prev);
+      newStates.set(index, true);
+      return newStates;
+    });
 
     // 1초 후 자동 저장
-    saveTimeoutRef.current = setTimeout(async () => {
-      try {
-        const now = new Date();
-        const updatedNotes = [...consultationNotes];
-        // 현재 수정된 메모만 타임스탬프 업데이트, 다른 메모들은 기존 타임스탬프 유지
-        updatedNotes[index] = {text, lastSaved: now};
+    const timeoutId = setTimeout(async () => {
+      const maxRetries = 3;
+      let retryCount = 0;
+      let saveSuccessful = false;
 
-        const notesRef = ref(contactDatabase, `consultationNotes/${selectedInquiry.id}`);
-        const dataToSave = {
-          notes: updatedNotes.map((note, i) => ({
-            text: note.text || '',
-            lastSaved: i === index ? now.toISOString() : (note.lastSaved ?
-              (typeof note.lastSaved === 'string' ? note.lastSaved : note.lastSaved.toISOString()) : null)
-          })),
-          inquiryId: selectedInquiry.id,
-          lastUpdated: now.toISOString()
-        };
+      while (retryCount < maxRetries && !saveSuccessful) {
+        try {
+          const now = new Date();
+          const updatedNotes = [...consultationNotes];
+          // 현재 수정된 메모만 타임스탬프 업데이트, 다른 메모들은 기존 타임스탬프 유지
+          updatedNotes[index] = {text, lastSaved: now};
 
-        console.log('Saving consultation notes:', dataToSave);
-        await set(notesRef, dataToSave);
+          const notesRef = ref(contactDatabase, `consultationNotes/${selectedInquiry.id}`);
+          const dataToSave = {
+            notes: updatedNotes.map((note, i) => ({
+              text: note.text || '',
+              lastSaved: i === index ? now.toISOString() : (note.lastSaved ?
+                (typeof note.lastSaved === 'string' ? note.lastSaved : note.lastSaved.toISOString()) : null)
+            })),
+            inquiryId: selectedInquiry.id,
+            lastUpdated: now.toISOString()
+          };
 
-        // 성공적으로 저장된 경우에만 상태 업데이트
-        setConsultationNotes(updatedNotes);
-        setIsSaving(null);
-        console.log('Consultation notes saved successfully');
-      } catch (error) {
-        console.error('Failed to save consultation note:', error);
-        setIsSaving(null);
-        alert('상담 메모 저장에 실패했습니다.');
+          console.log(`Saving consultation note ${index} (attempt ${retryCount + 1}/${maxRetries}):`, dataToSave);
+          await set(notesRef, dataToSave);
+
+          // 성공적으로 저장된 경우에만 상태 업데이트
+          setConsultationNotes(updatedNotes);
+          setSavingStates(prev => {
+            const newStates = new Map(prev);
+            newStates.delete(index);
+            return newStates;
+          });
+          saveSuccessful = true;
+          console.log(`Consultation note ${index} saved successfully`);
+        } catch (error) {
+          retryCount++;
+          console.error(`Failed to save consultation note ${index} (attempt ${retryCount}/${maxRetries}):`, error);
+
+          if (retryCount < maxRetries) {
+            // 재시도 전 대기 (1초, 2초)
+            const waitTime = retryCount * 1000;
+            console.log(`Retrying note ${index} in ${waitTime}ms...`);
+            await new Promise(resolve => setTimeout(resolve, waitTime));
+          } else {
+            // 모든 재시도 실패
+            setSavingStates(prev => {
+              const newStates = new Map(prev);
+              newStates.delete(index);
+              return newStates;
+            });
+            alert(`상담 메모 ${index + 1}번 저장에 실패했습니다. 네트워크를 확인해주세요.`);
+          }
+        }
       }
+
+      // 타이머 맵에서 제거
+      saveTimeoutRefs.current.delete(index);
     }, 1000);
+
+    // 타이머 맵에 저장
+    saveTimeoutRefs.current.set(index, timeoutId);
   };
 
   // 메모 필드 추가
@@ -229,7 +267,13 @@ const AdminPage: React.FC<AdminPageProps> = () => {
 
   // 메모 필드 삭제
   const removeNoteField = (index: number) => {
-    if (consultationNotes.length === 1) return; // 최소 1개는 유지
+    if (consultationNotes.length === 1) {
+      // 마지막 한개일 때는 내용만 클리어
+      const clearedNotes = [...consultationNotes];
+      clearedNotes[index] = {text: ''};
+      setConsultationNotes(clearedNotes);
+      return;
+    }
     const newNotes = consultationNotes.filter((_, i) => i !== index);
     setConsultationNotes(newNotes);
   };
@@ -761,10 +805,10 @@ const AdminPage: React.FC<AdminPageProps> = () => {
                             <div style={{
                               minWidth: '180px',
                               fontSize: '12px',
-                              color: isSaving === index ? '#f59e0b' : '#6b7280',
+                              color: savingStates.get(index) ? '#f59e0b' : '#6b7280',
                               paddingTop: '14px'
                             }}>
-                              {isSaving === index ? '저장 중...' :
+                              {savingStates.get(index) ? '저장 중...' :
                                note.lastSaved ? (() => {
                                  const date = new Date(note.lastSaved);
                                  const year = String(date.getFullYear()).slice(2);
@@ -822,7 +866,7 @@ const AdminPage: React.FC<AdminPageProps> = () => {
                               >
                                 +
                               </button>
-                              {consultationNotes.length > 1 && (
+                              {(
                                 <button
                                   onClick={() => removeNoteField(index)}
                                   style={{
