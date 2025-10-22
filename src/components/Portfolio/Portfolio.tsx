@@ -35,7 +35,8 @@ const Portfolio: React.FC = () => {
     { id: 'search', name: '서칭', color: '#FF6B6B' },
     { id: 'goods', name: '굿즈', color: '#4ECDC4' },
     { id: 'apparel', name: '어패럴', color: '#45B7D1' },
-    { id: 'pc', name: 'PC', color: '#96CEB4' }
+    { id: 'pc', name: 'PC', color: '#96CEB4' },
+    { id: 'web', name: '웹개발', color: '#9B59B6' }
   ], []);
 
   // URL 파라미터에서 카테고리 읽기
@@ -71,6 +72,15 @@ const Portfolio: React.FC = () => {
         }
       }
 
+      // 웹개발 카테고리 - 도면 배치
+      items.push({
+        id: 'web_1',
+        category: 'web',
+        thumbnailSrc: '/portfolio/thumbnails/web/web_1.webp',
+        fullSrc: '/portfolio/full/web/web_1.webp',
+        alt: '도면 배치 - 평면도 그리기 & 가구 배치 플래너'
+      });
+
       // 랜덤 순서로 섞기
       const shuffledItems = [...items].sort(() => Math.random() - 0.5);
       setPortfolioItems(shuffledItems);
@@ -89,7 +99,7 @@ const Portfolio: React.FC = () => {
 
       // 0.3초 후 나머지 이미지 표시 & 프리로딩 시작
       setTimeout(() => {
-        setVisibleCount(24);
+        setVisibleCount(25);
         preloadImages();
       }, 300);
     };
