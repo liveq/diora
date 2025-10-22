@@ -58,6 +58,20 @@ const Header: React.FC = () => {
     setIsMenuOpen(false);
   };
 
+  const navigateToRelatedServices = () => {
+    if (location.pathname === '/related-services') {
+      // 이미 관련서비스 페이지에 있으면 페이지 상단으로 스크롤 후 새로고침
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setTimeout(() => {
+        navigate('/related-services', { replace: false });
+        window.location.reload();
+      }, 300);
+    } else {
+      navigate('/related-services');
+    }
+    setIsMenuOpen(false);
+  };
+
   const navigateToHome = () => {
     if (location.pathname === '/') {
       // 이미 홈에 있으면 최상단으로 스크롤
@@ -84,7 +98,7 @@ const Header: React.FC = () => {
           >
             DIORA
           </div>
-          
+
           <ul className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
             <li className="nav-item">
               <button onClick={() => scrollToSection('hero')} className="nav-link">
@@ -122,12 +136,17 @@ const Header: React.FC = () => {
               </button>
             </li>
             <li className="nav-item">
+              <button onClick={navigateToRelatedServices} className="nav-link">
+                관련서비스
+              </button>
+            </li>
+            <li className="nav-item">
               <button onClick={() => scrollToSection('contact-compact')} className="nav-link">
                 문의하기
               </button>
             </li>
           </ul>
-          
+
           <div className={`hamburger ${isMenuOpen ? 'active' : ''}`} onClick={toggleMenu}>
             <span className="bar"></span>
             <span className="bar"></span>

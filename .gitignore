@@ -30,6 +30,10 @@ image-source/apparel/250915_*.png
 # Backup files
 /backup
 src/pages/*_backup.*
+**/*.backup
 
 # Temporary excluded files
 /temp_excluded
+
+# Personal documentation and manuals
+FIREBASE_CONTACT_MANUAL.md

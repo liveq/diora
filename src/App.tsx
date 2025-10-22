@@ -13,6 +13,7 @@ import Footer from './components/Footer/Footer';
 import PortfolioPage from './pages/PortfolioPage';
 import FoodPage from './pages/FoodPage';
 import AdminPageSecure from './pages/AdminPageSecure';
+import RelatedServicesPage from './pages/RelatedServicesPage';
 import ScrollToTop from './components/ScrollToTop';
 import Chat from './components/Chat/Chat';
 import TopButton from './components/TopButton/TopButton';
@@ -53,6 +54,7 @@ function AppContent() {
         <Route path="/" element={<HomePage />} />
         <Route path="/portfolio" element={<PortfolioPage />} />
         <Route path="/food" element={<FoodPage />} />
+        <Route path="/related-services" element={<RelatedServicesPage />} />
         <Route path="/diocs" element={<AdminPageSecure />} />
       </Routes>
       {/* /diocs 경로가 아닐 때만 Chat 컴포넌트와 TopButton 렌더링 */}
