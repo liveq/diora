@@ -6,10 +6,10 @@
 
 .services-grid-related {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(2, 1fr);
   gap: var(--spacing-2xl);
   margin-top: var(--spacing-lg);
-  max-width: 900px;
+  max-width: 1400px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -175,6 +175,7 @@
 /* 반응형 - 태블릿 */
 @media (max-width: 1023px) {
   .services-grid-related {
+    grid-template-columns: 1fr;
     max-width: 700px;
   }
 

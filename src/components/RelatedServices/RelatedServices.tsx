@@ -24,6 +24,26 @@ const RelatedServices: React.FC = () => {
       icon: '📐'
     },
     {
+      id: 'split',
+      title: '텍스트 분할기',
+      subtitle: 'txt 파일 크기별 분할 도구',
+      englishTitle: 'Text File Splitter',
+      description: '대용량 텍스트 파일을 원하는 크기로 쉽게 나누는 온라인 도구입니다. 원본 파일은 브라우저에서만 처리되어 서버로 전송되지 않으며, 줄 단위로 분할하여 문장이 중간에 잘리지 않습니다. 개별 다운로드 또는 ZIP 파일로 한번에 다운로드할 수 있습니다.',
+      features: [
+        '📁 드래그 & 드롭 업로드',
+        '⚙️ 크기 조절 (0.5MB ~ 5MB)',
+        '📝 줄 단위 분할 (문장 안 잘림)',
+        '💾 개별 파일 다운로드',
+        '📦 ZIP 일괄 다운로드',
+        '🔒 브라우저 내 처리 (안전)',
+        '🌐 다국어 지원 (한/영)',
+        '💰 100% 무료'
+      ],
+      useCases: 'ChatGPT·Claude·Gemini 등 AI 업로드, 이메일 첨부 크기 제한, 채팅 앱 긴 텍스트 나누기, 문서 읽기 쉽게 분할',
+      url: 'https://split.baal.co.kr',
+      icon: '✂️'
+    },
+    {
       id: 'baal',
       title: '바알',
       subtitle: '무료 운세 모음',
