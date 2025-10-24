@@ -191,6 +191,7 @@
   }
 
   .services-grid-related {
+    grid-template-columns: 1fr;
     gap: var(--spacing-xl);
   }
 

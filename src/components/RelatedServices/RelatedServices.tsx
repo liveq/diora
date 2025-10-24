@@ -44,6 +44,26 @@ const RelatedServices: React.FC = () => {
       icon: '✂️'
     },
     {
+      id: 'pdf',
+      title: 'PDF 변환',
+      subtitle: 'PDF를 JPEG로 변환하거나 분할',
+      englishTitle: 'PDF Converter Tool',
+      description: 'PDF 파일을 고품질 JPEG 이미지로 변환하거나 여러 개의 작은 PDF로 분할하는 온라인 도구입니다. 브라우저에서만 처리되어 안전하며, 페이지 범위 선택, 품질 조절, 그레이스케일 변환 등 다양한 옵션을 제공합니다. 변환된 이미지나 분할된 PDF는 ZIP 파일로 한번에 다운로드할 수 있습니다.',
+      features: [
+        '📄 PDF → JPEG 변환 (최대 3개)',
+        '✂️ PDF 분할 (균등/페이지/범위)',
+        '🎨 품질 선택 (150/300 DPI)',
+        '⚫ 그레이스케일 변환',
+        '📦 ZIP 자동 다운로드',
+        '🔒 브라우저 내 처리 (안전)',
+        '🌐 다국어 지원 (한/영)',
+        '💰 100% 무료'
+      ],
+      useCases: 'PPT 이미지 변환, 포스터 인쇄용 JPEG, 대용량 PDF 분할, 특정 페이지만 추출, 문서 공유용 분할',
+      url: 'https://pdf.baal.co.kr',
+      icon: '📄'
+    },
+    {
       id: 'baal',
       title: '바알',
       subtitle: '무료 운세 모음',
