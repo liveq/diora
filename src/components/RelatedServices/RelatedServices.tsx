@@ -184,6 +184,126 @@ const RelatedServices: React.FC = () => {
       url: 'https://upscale.baal.co.kr'
     },
     {
+      id: 'color',
+      icon: '🎨',
+      title: '색상 변환기',
+      subtitle: 'HEX, RGB, HSL 변환 및 팔레트 생성',
+      englishTitle: 'COLOR CONVERTER & PALETTE GENERATOR',
+      description: '색상 코드를 HEX, RGB, HSL 형식으로 상호 변환하고, 5가지 팔레트 규칙으로 조화로운 색상을 생성하는 도구입니다. 유사색, 보색, 삼각색, 사각색, 단색 팔레트를 자동으로 생성하며, WCAG 접근성 대비 검사로 텍스트 가독성을 확인할 수 있습니다. 디자이너와 개발자를 위한 필수 도구입니다.',
+      features: [
+        '🎨 3가지 포맷 변환 (HEX/RGB/HSL)',
+        '🌈 5가지 팔레트 규칙',
+        '✅ WCAG 접근성 검사',
+        '📋 원클릭 복사',
+        '🕐 색상 히스토리',
+        '🎨 실시간 미리보기',
+        '🌐 다국어 지원 (한/영)',
+        '💰 100% 무료'
+      ],
+      useCases: '웹 디자인, UI/UX 작업, 브랜딩 색상 선정, 접근성 검사, 색상 조합 찾기, CSS 코드 작성',
+      url: 'https://color.baal.co.kr'
+    },
+    {
+      id: 'base64',
+      icon: '🔐',
+      title: 'Base64 인코더/디코더',
+      subtitle: '텍스트와 이미지를 Base64로 변환',
+      englishTitle: 'BASE64 ENCODER/DECODER',
+      description: '텍스트와 이미지를 Base64로 인코딩하거나 디코딩하는 개발자 도구입니다. UTF-8을 완벽하게 지원하여 한글, 이모지 등 모든 문자를 정확하게 변환합니다. URL-safe Base64 옵션으로 URL에 안전하게 사용할 수 있으며, 이미지를 Data URL로 변환하여 HTML/CSS에 직접 삽입할 수 있습니다.',
+      features: [
+        '📝 텍스트 모드 (인코딩/디코딩)',
+        '🖼️ 이미지 모드 (Data URL)',
+        '🌍 UTF-8 완벽 지원',
+        '🔗 URL-safe 옵션',
+        '📋 복사/다운로드',
+        '🔒 브라우저 내 처리 (안전)',
+        '🌐 다국어 지원 (한/영)',
+        '💰 100% 무료'
+      ],
+      useCases: 'API 인증 토큰, 이미지 Data URL 생성, JSON 데이터 인코딩, 이메일 첨부파일, HTML 인라인 이미지, 개발 테스트',
+      url: 'https://base64.baal.co.kr'
+    },
+    {
+      id: 'regex',
+      icon: '🔍',
+      title: '정규식 테스터',
+      subtitle: '정규표현식 실시간 테스트 및 매칭',
+      englishTitle: 'REGEX TESTER & MATCHER',
+      description: '정규표현식을 실시간으로 테스트하고 매칭 결과를 확인하는 개발자 도구입니다. 이메일, URL, 전화번호, 날짜, IP 주소 등 자주 사용하는 패턴 예제를 제공하며, 매칭된 부분을 색상으로 하이라이트하여 시각적으로 확인할 수 있습니다. 치환 기능과 캡처 그룹 표시를 지원합니다.',
+      features: [
+        '⚡ 실시간 테스트',
+        '🎨 매칭 하이라이트',
+        '🔄 치환 기능',
+        '📚 예제 패턴 6가지',
+        '🚩 플래그 지원 (g/i/m/s)',
+        '💡 캡처 그룹 표시',
+        '🌐 다국어 지원 (한/영)',
+        '💰 100% 무료'
+      ],
+      useCases: '데이터 검증, 문자열 파싱, 폼 유효성 검사, 로그 분석, 텍스트 치환, 정규식 학습',
+      url: 'https://regex.baal.co.kr'
+    },
+    {
+      id: 'hash',
+      icon: '🔒',
+      title: '해시 생성기',
+      subtitle: 'MD5, SHA-1, SHA-256 해시 생성',
+      englishTitle: 'HASH GENERATOR & VERIFIER',
+      description: '텍스트와 파일을 MD5, SHA-1, SHA-256, SHA-384, SHA-512 해시로 변환하는 암호화 도구입니다. 파일 무결성 검증, 비밀번호 해싱, 데이터 검증에 사용할 수 있으며, 여러 알고리즘을 동시에 적용하여 결과를 비교할 수 있습니다. 대용량 파일도 안전하게 처리합니다.',
+      features: [
+        '🔐 5가지 알고리즘 지원',
+        '📝 텍스트 해싱',
+        '📁 파일 해싱 (최대 100MB)',
+        '✅ 해시 검증/비교',
+        '📋 원클릭 복사',
+        '🔒 브라우저 내 처리 (안전)',
+        '🌐 다국어 지원 (한/영)',
+        '💰 100% 무료'
+      ],
+      useCases: '파일 무결성 검증, 다운로드 확인, 비밀번호 해싱, 데이터 검증, 보안 테스트, 암호화 학습',
+      url: 'https://hash.baal.co.kr'
+    },
+    {
+      id: 'csv',
+      icon: '📊',
+      title: 'CSV 변환기',
+      subtitle: 'CSV↔JSON↔Excel 상호 변환',
+      englishTitle: 'CSV/JSON/EXCEL CONVERTER',
+      description: 'CSV, JSON, Excel 파일을 상호 변환하는 데이터 처리 도구입니다. 구분자 선택, 인코딩 지정, 헤더 옵션을 지원하며, 실시간 미리보기로 변환 결과를 확인할 수 있습니다. 한글 Excel 호환성을 위한 BOM 추가, 다양한 인코딩 지원으로 데이터 깨짐을 방지합니다.',
+      features: [
+        '🔄 3포맷 상호 변환 (CSV/JSON/XLSX)',
+        '📊 테이블 실시간 미리보기',
+        '⚙️ 구분자 선택 (쉼표/탭/세미콜론/파이프)',
+        '🌍 인코딩 지원 (UTF-8/EUC-KR)',
+        '💾 다운로드 (CSV/JSON/XLSX)',
+        '🔒 브라우저 내 처리 (안전)',
+        '🌐 다국어 지원 (한/영)',
+        '💰 100% 무료'
+      ],
+      useCases: 'Excel 데이터 변환, API 데이터 가공, 데이터베이스 import, 통계 분석, 데이터 정리, 시스템 연동',
+      url: 'https://csv.baal.co.kr'
+    },
+    {
+      id: 'md',
+      icon: '✍️',
+      title: '마크다운 에디터',
+      subtitle: '실시간 마크다운 프리뷰 에디터',
+      englishTitle: 'MARKDOWN EDITOR & PREVIEWER',
+      description: '마크다운 문서를 작성하고 실시간으로 미리보기하는 온라인 에디터입니다. GitHub Flavored Markdown을 지원하며, 100개 이상의 프로그래밍 언어에 대한 코드 하이라이팅을 제공합니다. 작성한 문서를 Markdown 또는 스타일이 포함된 HTML 파일로 다운로드할 수 있습니다.',
+      features: [
+        '⚡ 실시간 프리뷰',
+        '💻 코드 하이라이팅 (100+ 언어)',
+        '⌨️ 단축키 지원',
+        '📝 GitHub Flavored Markdown',
+        '💾 MD/HTML 다운로드',
+        '🛡️ XSS 보호',
+        '🌐 다국어 지원 (한/영)',
+        '💰 100% 무료'
+      ],
+      useCases: 'README 작성, 기술 문서 작성, 블로그 포스트, GitHub Wiki, 프로젝트 문서, 개발 노트',
+      url: 'https://md.baal.co.kr'
+    },
+    {
       id: 'baal',
       title: '바알',
       subtitle: '무료 운세 모음',
