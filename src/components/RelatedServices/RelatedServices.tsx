@@ -64,6 +64,126 @@ const RelatedServices: React.FC = () => {
       icon: '📄'
     },
     {
+      id: 'compress',
+      icon: '🗜️',
+      title: '이미지 압축기',
+      subtitle: '이미지 용량을 효과적으로 줄이기',
+      englishTitle: 'IMAGE COMPRESSION TOOL',
+      description: 'JPG, PNG, WebP 이미지 파일의 용량을 줄여주는 온라인 압축 도구입니다. 브라우저에서 바로 처리되어 안전하며, 품질을 조절하면서 최대 90%까지 용량을 줄일 수 있습니다. 탭 기반 UI로 여러 이미지를 동시에 압축하고, 원본과 압축본을 비교하며 최적의 품질을 찾을 수 있습니다.',
+      features: [
+        '🎚️ 품질 조절 (10-100%)',
+        '📦 일괄 처리 (최대 100개)',
+        '🔄 JPG/PNG/WebP 지원',
+        '👀 실시간 미리보기',
+        '📊 용량 절감률 표시',
+        '🔒 브라우저 내 처리 (안전)',
+        '🌐 다국어 지원 (한/영)',
+        '💰 100% 무료'
+      ],
+      useCases: '웹사이트 최적화, 이메일 첨부 용량 절감, SNS 업로드 속도 개선, 포트폴리오 경량화, 모바일 저장공간 확보',
+      url: 'https://compress.baal.co.kr'
+    },
+    {
+      id: 'qr',
+      icon: '📱',
+      title: 'QR 코드 생성기',
+      subtitle: 'URL, 텍스트, 연락처를 QR로 변환',
+      englishTitle: 'QR CODE GENERATOR',
+      description: 'URL, 텍스트, 이메일, 전화번호, Wi-Fi 정보, vCard 등을 QR 코드로 변환하는 도구입니다. 색상 커스터마이징, 로고 삽입, 다양한 크기와 오류 수정 레벨 설정이 가능합니다. 생성된 QR 코드는 PNG 또는 SVG 형식으로 다운로드할 수 있으며, 고해상도 출력을 지원합니다.',
+      features: [
+        '🔗 7가지 타입 지원 (URL/텍스트/이메일/전화/SMS/Wi-Fi/vCard)',
+        '🎨 색상 커스터마이징 (전경/배경)',
+        '🖼️ 로고 이미지 삽입',
+        '📏 크기 조절 (256-1024px)',
+        '🛡️ 오류 수정 레벨 설정',
+        '💾 PNG/SVG 다운로드',
+        '🌐 다국어 지원 (한/영)',
+        '💰 100% 무료'
+      ],
+      useCases: '명함 제작, 레스토랑 메뉴판, 이벤트 초대장, Wi-Fi 공유, 제품 포장, 전시회 안내, 연락처 교환',
+      url: 'https://qr.baal.co.kr'
+    },
+    {
+      id: 'resize',
+      icon: '📏',
+      title: '이미지 리사이즈',
+      subtitle: '이미지 크기를 자유롭게 변경',
+      englishTitle: 'IMAGE RESIZER TOOL',
+      description: '이미지의 가로/세로 크기를 픽셀 단위로 정확하게 조절하는 도구입니다. 인스타그램, 유튜브, 페이스북 등 SNS 플랫폼별 최적 크기 프리셋을 제공하며, 비율을 유지하거나 자유롭게 변경할 수 있습니다. 여러 이미지를 한번에 동일한 크기로 변환하고 ZIP 파일로 다운로드할 수 있습니다.',
+      features: [
+        '📐 픽셀/비율 지정',
+        '📱 SNS 프리셋 (인스타/유튜브/페이스북)',
+        '🔄 비율 유지/자유 변경',
+        '📦 일괄 처리 (최대 100개)',
+        '👁️ 실시간 미리보기',
+        '💾 ZIP 다운로드',
+        '🌐 다국어 지원 (한/영)',
+        '💰 100% 무료'
+      ],
+      useCases: 'SNS 콘텐츠 제작, 썸네일 생성, 프로필 사진 조정, 상품 이미지 통일, 웹사이트 배너 제작, 이메일 서명 이미지',
+      url: 'https://resize.baal.co.kr'
+    },
+    {
+      id: 'json',
+      icon: '{ }',
+      title: 'JSON 포맷터',
+      subtitle: 'JSON 데이터 정렬, 압축, 검증',
+      englishTitle: 'JSON FORMATTER & VALIDATOR',
+      description: 'JSON 데이터를 보기 좋게 정렬하거나 압축하고, 문법 오류를 실시간으로 검증하는 개발자 도구입니다. 트리뷰 모드로 계층 구조를 시각화하고, 에러 위치를 정확히 표시합니다. 대용량 JSON 파일도 빠르게 처리하며, 복사 한번으로 바로 사용할 수 있습니다.',
+      features: [
+        '✨ JSON 정렬 (Pretty Print)',
+        '🗜️ JSON 압축 (Minify)',
+        '✅ 실시간 문법 검증',
+        '🌲 트리뷰 모드',
+        '🔍 에러 위치 표시',
+        '📋 원클릭 복사',
+        '🌐 다국어 지원 (한/영)',
+        '💰 100% 무료'
+      ],
+      useCases: 'API 응답 확인, 설정 파일 편집, 데이터 구조 분석, 디버깅, JSON 학습, 코드 리뷰, 문서 작성',
+      url: 'https://json.baal.co.kr'
+    },
+    {
+      id: 'convert',
+      icon: '🔄',
+      title: '이미지 변환기',
+      subtitle: 'JPG, PNG, WebP 포맷 자유롭게 변환',
+      englishTitle: 'IMAGE FORMAT CONVERTER',
+      description: 'JPG, PNG, WebP 이미지 포맷을 상호 변환하는 도구입니다. 탭 기반 UI로 여러 파일을 동시에 처리하고, 투명 배경이 필요하면 PNG로, 웹 최적화가 필요하면 WebP로 쉽게 변환할 수 있습니다. 변환된 이미지는 개별 또는 ZIP 파일로 다운로드 가능하며, 품질 손실을 최소화합니다.',
+      features: [
+        '🔄 3포맷 지원 (JPG/PNG/WebP)',
+        '📦 일괄 변환 (최대 100개)',
+        '🎨 투명 배경 유지 (PNG)',
+        '⚡ 빠른 처리 속도',
+        '💾 개별/ZIP 다운로드',
+        '🔒 브라우저 내 처리 (안전)',
+        '🌐 다국어 지원 (한/영)',
+        '💰 100% 무료'
+      ],
+      useCases: '웹사이트 최적화 (WebP), 로고 투명 배경 (PNG), 사진 호환성 (JPG), 인쇄용 변환, SNS 업로드, 이메일 첨부',
+      url: 'https://convert.baal.co.kr'
+    },
+    {
+      id: 'upscale',
+      icon: '✨',
+      title: 'AI 이미지 업스케일러',
+      subtitle: 'AI로 이미지 해상도를 2배 향상',
+      englishTitle: 'AI IMAGE UPSCALER',
+      description: '인공지능 기술로 이미지 해상도를 2배로 높여주는 도구입니다. 스피드 모드는 빠른 처리를, AI 모드는 최고 품질의 업스케일링을 제공합니다. 저해상도 사진, 오래된 이미지, 작은 로고를 선명하게 복원하여 고품질 이미지로 변환할 수 있습니다. 탭 기반 UI로 여러 이미지를 동시에 처리합니다.',
+      features: [
+        '🤖 AI 업스케일링 엔진',
+        '⚡ 2가지 모드 (스피드/AI)',
+        '📈 2배 해상도 향상',
+        '🎨 선명도 복원',
+        '📦 일괄 처리 지원',
+        '💾 고품질 다운로드',
+        '🌐 다국어 지원 (한/영)',
+        '💰 100% 무료'
+      ],
+      useCases: '저해상도 사진 복원, 로고 확대, 인쇄용 이미지 준비, SNS 프로필 개선, 오래된 사진 선명화, 제품 이미지 품질 향상',
+      url: 'https://upscale.baal.co.kr'
+    },
+    {
       id: 'baal',
       title: '바알',
       subtitle: '무료 운세 모음',
