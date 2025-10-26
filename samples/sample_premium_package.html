@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>프리미엄 패키지 샘플 - PREMIUM BRAND</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #B8860B;
+            --primary-dark: #9A7209;
+            --primary-light: #F4E4C1;
+            --accent-gold: #FFD700;
+            --text-dark: #1a1a1a;
+            --text-light: #666;
+            --bg-luxury: #FAF8F3;
+        }
+
+        body {
+            font-family: 'Georgia', 'Noto Sans KR', serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background: white;
+        }
+
+        /* 프리로더 */
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: var(--text-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            animation: fadeOut 2s 1s forwards;
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
+
+        .preloader-text {
+            color: var(--primary-color);
+            font-size: 48px;
+            letter-spacing: 10px;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        /* 럭셔리 헤더 */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s;
+        }
+
+        nav {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 90px;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: 300;
+            color: var(--primary-color);
+            letter-spacing: 3px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 50px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-size: 14px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--primary-color);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* 히어로 섹션 - 풀스크린 */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23B8860B" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,165.3C384,171,480,149,576,144C672,139,768,149,864,170.7C960,192,1056,224,1152,213.3C1248,203,1344,149,1392,122.7L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
+            background-size: cover;
+            opacity: 0.3;
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 72px;
+            font-weight: 300;
+            margin-bottom: 30px;
+            letter-spacing: 5px;
+            animation: slideDown 1s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .hero-subtitle {
+            font-size: 24px;
+            margin-bottom: 50px;
+            color: var(--primary-color);
+            letter-spacing: 3px;
+        }
+
+        .luxury-btn {
+            display: inline-block;
+            padding: 18px 50px;
+            background: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            text-decoration: none;
+            font-size: 14px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.3s;
+        }
+
+        .luxury-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        /* 특별 서비스 섹션 */
+        .premium-services {
+            padding: 120px 40px;
+            background: var(--bg-luxury);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .section-header h2 {
+            font-size: 48px;
+            font-weight: 300;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+        }
+
+        .section-header p {
+            font-size: 18px;
+            color: var(--text-light);
+            letter-spacing: 1px;
+        }
+
+        .premium-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 60px;
+        }
+
+        .premium-card {
+            background: white;
+            padding: 60px 40px;
+            text-align: center;
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .premium-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--primary-color);
+            transform: scaleX(0);
+            transition: transform 0.4s;
+        }
+
+        .premium-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .premium-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+        }
+
+        .premium-icon {
+            font-size: 48px;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+        }
+
+        /* 인터랙티브 갤러리 */
+        .gallery {
+            padding: 120px 0;
+            background: white;
+        }
+
+        .gallery-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            aspect-ratio: 1;
+            background: var(--text-dark);
+        }
+
+        .gallery-item::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            opacity: 0.8;
+            z-index: 1;
+        }
+
+        .gallery-content {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            z-index: 2;
+            transition: transform 0.4s;
+        }
+
+        .gallery-item:hover .gallery-content {
+            transform: scale(1.1);
+        }
+
+        .gallery-number {
+            font-size: 72px;
+            font-weight: 300;
+            opacity: 0.3;
+        }
+
+        .gallery-title {
+            font-size: 24px;
+            margin-top: 20px;
+            letter-spacing: 2px;
+        }
+
+        /* 실시간 채팅 플로팅 버튼 */
+        .chat-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 70px;
+            height: 70px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(184, 134, 11, 0.4);
+            transition: transform 0.3s;
+            z-index: 999;
+        }
+
+        .chat-button:hover {
+            transform: scale(1.1);
+        }
+
+        /* 관리자 패널 표시 */
+        .admin-panel-demo {
+            padding: 80px 40px;
+            background: #f5f5f5;
+        }
+
+        .panel-preview {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+        }
+
+        .panel-header {
+            background: var(--text-dark);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-tabs {
+            display: flex;
+            gap: 30px;
+            padding: 20px 30px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .panel-tab {
+            padding: 10px 20px;
+            background: transparent;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .panel-tab.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .panel-content {
+            padding: 40px;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+        }
+
+        /* 고객 후기 */
+        .testimonials {
+            padding: 120px 40px;
+            background: var(--bg-luxury);
+        }
+
+        .testimonial-slider {
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .testimonial {
+            padding: 60px;
+            background: white;
+            border-radius: 0;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+        }
+
+        .testimonial-text {
+            font-size: 24px;
+            font-style: italic;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin-bottom: 30px;
+        }
+
+        .testimonial-author {
+            font-size: 16px;
+            color: var(--primary-color);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .stars {
+            color: var(--accent-gold);
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* 럭셔리 푸터 */
+        .luxury-footer {
+            background: var(--text-dark);
+            color: white;
+            padding: 80px 40px 40px;
+        }
+
+        .footer-grid {
+            max-width: 1400px;
+            margin: 0 auto 60px;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 60px;
+        }
+
+        .footer-brand h3 {
+            font-size: 36px;
+            font-weight: 300;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            letter-spacing: 3px;
+        }
+
+        .footer-links h4 {
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            font-size: 14px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .footer-bottom {
+            padding-top: 40px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+            color: rgba(255,255,255,0.5);
+        }
+
+        .package-badge {
+            position: fixed;
+            top: 110px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-gold));
+            color: white;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-weight: bold;
+            z-index: 999;
+            box-shadow: 0 10px 30px rgba(184, 134, 11, 0.4);
+            letter-spacing: 1px;
+        }
+
+        /* 반응형 */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 48px; }
+            .nav-links { display: none; }
+            .gallery-container { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; }
+            .premium-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 프리로더 -->
+    <div class="preloader">
+        <div class="preloader-text">PREMIUM</div>
+    </div>
+
+    <!-- 패키지 표시 배지 -->
+    <div class="package-badge">프리미엄 패키지</div>
+
+    <!-- 럭셔리 헤더 -->
+    <header>
+        <nav>
+            <div class="logo">PREMIUM BRAND</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#gallery">Gallery</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#admin">Admin</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- 히어로 섹션 -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1>EXCELLENCE</h1>
+            <p class="hero-subtitle">BEYOND EXPECTATIONS</p>
+            <a href="#services" class="luxury-btn">Discover More</a>
+        </div>
+    </section>
+
+    <!-- 프리미엄 서비스 -->
+    <section class="premium-services" id="services">
+        <div class="section-header">
+            <h2>Premium Services</h2>
+            <p>최고를 위한 최고의 서비스</p>
+        </div>
+        <div class="premium-grid">
+            <div class="premium-card">
+                <div class="premium-icon">👑</div>
+                <h3>VIP Consulting</h3>
+                <p>전담 컨설턴트가 1:1로 관리하는 프리미엄 서비스</p>
+            </div>
+            <div class="premium-card">
+                <div class="premium-icon">💎</div>
+                <h3>Custom Development</h3>
+                <p>고객의 요구에 완벽하게 맞춘 맞춤형 개발</p>
+            </div>
+            <div class="premium-card">
+                <div class="premium-icon">🏆</div>
+                <h3>24/7 Support</h3>
+                <p>언제든지 이용 가능한 프리미엄 지원 서비스</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 인터랙티브 갤러리 -->
+    <section class="gallery" id="gallery">
+        <div class="section-header">
+            <h2>Portfolio Gallery</h2>
+            <p>우리의 작품을 만나보세요</p>
+        </div>
+        <div class="gallery-container">
+            <div class="gallery-item">
+                <div class="gallery-content">
+                    <div class="gallery-number">01</div>
+                    <div class="gallery-title">LUXURY HOTEL</div>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <div class="gallery-content">
+                    <div class="gallery-number">02</div>
+                    <div class="gallery-title">FINE DINING</div>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <div class="gallery-content">
+                    <div class="gallery-number">03</div>
+                    <div class="gallery-title">BOUTIQUE</div>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <div class="gallery-content">
+                    <div class="gallery-number">04</div>
+                    <div class="gallery-title">RESORT</div>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <div class="gallery-content">
+                    <div class="gallery-number">05</div>
+                    <div class="gallery-title">SPA</div>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <div class="gallery-content">
+                    <div class="gallery-number">06</div>
+                    <div class="gallery-title">GALLERY</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 관리자 패널 데모 -->
+    <section class="admin-panel-demo" id="admin">
+        <div class="section-header">
+            <h2>Admin Dashboard</h2>
+            <p>강력한 관리 시스템</p>
+        </div>
+        <div class="panel-preview">
+            <div class="panel-header">
+                <h3>관리자 대시보드</h3>
+                <span>관리자님 환영합니다</span>
+            </div>
+            <div class="panel-tabs">
+                <button class="panel-tab active">대시보드</button>
+                <button class="panel-tab">주문관리</button>
+                <button class="panel-tab">고객관리</button>
+                <button class="panel-tab">통계</button>
+                <button class="panel-tab">설정</button>
+            </div>
+            <div class="panel-content">
+                <p>실시간 데이터 분석 및 관리 기능이 여기에 표시됩니다</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 고객 후기 -->
+    <section class="testimonials">
+        <div class="section-header">
+            <h2>Client Reviews</h2>
+            <p>고객님들의 소중한 후기</p>
+        </div>
+        <div class="testimonial-slider">
+            <div class="testimonial">
+                <div class="stars">★★★★★</div>
+                <p class="testimonial-text">
+                    "최고의 품질과 서비스로 우리 비즈니스를 한 단계
+                    업그레이드시켜 주었습니다. 프리미엄 패키지를
+                    선택하길 정말 잘했다고 생각합니다."
+                </p>
+                <p class="testimonial-author">— CEO, Global Company</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 럭셔리 푸터 -->
+    <footer class="luxury-footer">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <h3>PREMIUM BRAND</h3>
+                <p>최고를 추구하는 당신을 위한<br>프리미엄 비즈니스 파트너</p>
+            </div>
+            <div class="footer-links">
+                <h4>Services</h4>
+                <ul>
+                    <li><a href="#">Consulting</a></li>
+                    <li><a href="#">Development</a></li>
+                    <li><a href="#">Marketing</a></li>
+                    <li><a href="#">Support</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Portfolio</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Partners</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Contact</h4>
+                <ul>
+                    <li>📞 02-1234-5678</li>
+                    <li>✉️ premium@brand.com</li>
+                    <li>📍 Seoul, Korea</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 PREMIUM BRAND. All rights reserved.</p>
+            <p style="margin-top: 10px;">
+                Powered by DIORA - 프리미엄 패키지 샘플
+            </p>
+        </div>
+    </footer>
+
+    <!-- 실시간 채팅 버튼 -->
+    <div class="chat-button">💬</div>
+
+    <script>
+        // 스크롤 효과
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(255, 255, 255, 0.98)';
+                header.style.boxShadow = '0 5px 30px rgba(0,0,0,0.15)';
+            } else {
+                header.style.background = 'rgba(255, 255, 255, 0.95)';
+                header.style.boxShadow = '0 2px 20px rgba(0,0,0,0.1)';
+            }
+        });
+
+        // 채팅 버튼 클릭
+        document.querySelector('.chat-button').addEventListener('click', () => {
+            alert('실시간 채팅 기능이 여기에 구현됩니다');
+        });
+
+        // 관리자 패널 탭
+        document.querySelectorAll('.panel-tab').forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                document.querySelectorAll('.panel-tab').forEach(t => t.classList.remove('active'));
+                e.target.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
