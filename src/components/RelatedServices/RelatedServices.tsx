@@ -476,7 +476,7 @@ const RelatedServices: React.FC = () => {
               <div className="service-footer">
                 <span className="service-url">{service.url}</span>
                 <button className="service-button">
-                  무료로 사용하기 →
+                  사용하기 →
                 </button>
               </div>
             </div>
