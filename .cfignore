@@ -1,4 +1,4 @@
-functions/
+firebase-functions/
 firebase.json
 database.rules.json
 .github/
