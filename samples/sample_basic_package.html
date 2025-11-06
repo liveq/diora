@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>기본 패키지 샘플 - YOUR COMPANY</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #4CAF50;
+            --primary-dark: #388E3C;
+            --primary-light: #C8E6C9;
+            --text-dark: #212121;
+            --text-light: #757575;
+            --bg-light: #F5F5F5;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+        }
+
+        /* 헤더 */
+        header {
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-dark);
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        /* 히어로 섹션 */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-light) 0%, white 100%);
+            padding: 100px 20px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: var(--text-light);
+            margin-bottom: 30px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 15px 40px;
+            background: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 16px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(76, 175, 80, 0.3);
+        }
+
+        /* 서비스 섹션 */
+        .services {
+            padding: 80px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .services h2 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 50px;
+            color: var(--text-dark);
+        }
+
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+
+        .service-card {
+            text-align: center;
+            padding: 30px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .service-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 20px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+
+        .service-card h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: var(--text-dark);
+        }
+
+        .service-card p {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        /* About 섹션 */
+        .about {
+            background: var(--bg-light);
+            padding: 80px 20px;
+        }
+
+        .about-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .about h2 {
+            font-size: 36px;
+            margin-bottom: 30px;
+            color: var(--text-dark);
+        }
+
+        .about p {
+            font-size: 16px;
+            color: var(--text-light);
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        /* Contact 섹션 */
+        .contact {
+            padding: 80px 20px;
+            background: white;
+        }
+
+        .contact-content {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .contact h2 {
+            font-size: 36px;
+            margin-bottom: 30px;
+            color: var(--text-dark);
+        }
+
+        .contact-info {
+            display: grid;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .contact-item {
+            padding: 20px;
+            background: var(--bg-light);
+            border-radius: 8px;
+        }
+
+        .contact-item h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        /* Footer */
+        footer {
+            background: #333;
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .package-badge {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            z-index: 1000;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* 반응형 */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 36px; }
+            .hero p { font-size: 18px; }
+            .nav-links { display: none; }
+            .service-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 패키지 표시 배지 -->
+    <div class="package-badge">기본 패키지</div>
+
+    <!-- 헤더 -->
+    <header>
+        <nav>
+            <div class="logo">YOUR COMPANY</div>
+            <ul class="nav-links">
+                <li><a href="#home">홈</a></li>
+                <li><a href="#services">서비스</a></li>
+                <li><a href="#about">소개</a></li>
+                <li><a href="#contact">문의</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- 히어로 섹션 -->
+    <section class="hero" id="home">
+        <h1>당신의 비즈니스를 소개합니다</h1>
+        <p>고객과 함께 성장하는 믿을 수 있는 파트너</p>
+        <a href="#contact" class="cta-button">지금 시작하기</a>
+    </section>
+
+    <!-- 서비스 섹션 -->
+    <section class="services" id="services">
+        <h2>우리의 서비스</h2>
+        <div class="service-grid">
+            <div class="service-card">
+                <div class="service-icon">✓</div>
+                <h3>서비스 1</h3>
+                <p>고객의 니즈에 맞춘 최적화된 솔루션을 제공합니다</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">✓</div>
+                <h3>서비스 2</h3>
+                <p>전문적인 컨설팅과 지속적인 지원을 약속합니다</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">✓</div>
+                <h3>서비스 3</h3>
+                <p>합리적인 가격으로 최고의 품질을 보장합니다</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- About 섹션 -->
+    <section class="about" id="about">
+        <div class="about-content">
+            <h2>회사 소개</h2>
+            <p>
+                우리 회사는 고객의 성공을 최우선으로 생각합니다.
+                다년간의 경험과 전문성을 바탕으로 최상의 서비스를 제공하며,
+                고객과 함께 성장하는 파트너가 되고자 합니다.
+            </p>
+            <p>
+                신뢰와 품질을 바탕으로 한 서비스로
+                고객 만족을 실현하겠습니다.
+            </p>
+        </div>
+    </section>
+
+    <!-- Contact 섹션 -->
+    <section class="contact" id="contact">
+        <div class="contact-content">
+            <h2>문의하기</h2>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <h3>📞 전화</h3>
+                    <p>02-1234-5678</p>
+                </div>
+                <div class="contact-item">
+                    <h3>✉️ 이메일</h3>
+                    <p>info@yourcompany.com</p>
+                </div>
+                <div class="contact-item">
+                    <h3>📍 주소</h3>
+                    <p>서울시 강남구 테헤란로 123</p>
+                </div>
+            </div>
+            <a href="#" class="cta-button">문의 남기기</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 YOUR COMPANY. All rights reserved.</p>
+        <p style="margin-top: 10px; opacity: 0.7;">
+            Powered by DIORA - 기본 패키지 샘플
+        </p>
+    </footer>
+</body>
+</html>
