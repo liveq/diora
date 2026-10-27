@@ -1,23 +1,28 @@
 import { SessionStatus } from '../types/chat.types';
 
-const TELEGRAM_BOT_TOKEN = process.env.REACT_APP_TELEGRAM_BOT_TOKEN;
-const TELEGRAM_CHAT_ID = process.env.REACT_APP_TELEGRAM_CHAT_ID;
+// 텔레그램 알림 — 토큰은 클라이언트에 두지 않는다.
+// 브라우저는 같은 출처 프록시(/api/tg-send)로 text 만 보내고, 토큰/채팅ID 는 Pages 시크릿에만 존재.
+async function post(text: string): Promise<void> {
+  try {
+    await fetch('/api/tg-send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text }),
+    });
+  } catch (error) {
+    console.error('텔레그램 알림 오류:', error);
+  }
+}
 
-// 세션 상태 변경 알림
+// 세션 상태 변경 / 메시지 알림
 export const sendSessionNotification = async (
   status: SessionStatus | 'message',
   reason: string,
   chatId?: string
 ): Promise<void> => {
-  if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
-    console.error('텔레그램 설정이 없습니다.');
-    return;
-  }
-
   let message = '';
 
   if (status === 'message') {
-    // 일반 메시지 알림
     message = `
 🔔 DIORA 새 채팅 메시지
 
@@ -29,7 +34,6 @@ export const sendSessionNotification = async (
 📱 관리자 페이지에서 확인하세요.
     `.trim();
   } else {
-    // 세션 상태 변경 알림
     const statusMessages: Record<string, string> = {
       active: '🟢 새 대화 시작',
       inactive: '🟡 대화 비활성화',
@@ -62,38 +66,14 @@ ${status === 'active' ? '🆕 새 고객 문의입니다!' : ''}
     `.trim();
   }
 
-  try {
-    const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        chat_id: TELEGRAM_CHAT_ID,
-        text: message,
-        parse_mode: 'HTML'
-      })
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      console.error('텔레그램 알림 전송 실패:', error);
-    }
-  } catch (error) {
-    console.error('텔레그램 알림 오류:', error);
-  }
+  await post(message);
 };
 
-// 관리자 답장 알림 (텔레그램으로)
+// 관리자 답장 알림
 export const sendAdminReplyNotification = async (
   chatId: string,
   adminMessage: string
 ): Promise<void> => {
-  if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
-    console.error('텔레그램 설정이 없습니다.');
-    return;
-  }
-
   const message = `
 📤 DIORA 관리자 답변
 
@@ -103,24 +83,5 @@ export const sendAdminReplyNotification = async (
 📱 채팅 ID: ${chatId ? chatId.slice(-8) : 'N/A'}
   `.trim();
 
-  try {
-    const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        chat_id: TELEGRAM_CHAT_ID,
-        text: message,
-        parse_mode: 'HTML'
-      })
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      console.error('텔레그램 알림 전송 실패:', error);
-    }
-  } catch (error) {
-    console.error('텔레그램 알림 오류:', error);
-  }
+  await post(message);
 };

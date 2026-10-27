@@ -4,7 +4,8 @@ import './ChatSession.css';
 import { database, auth } from '../../firebase';
 import { ref, push, onValue } from 'firebase/database';
 import { signInAnonymously } from 'firebase/auth';
-import { startTelegramPolling, setActiveChat } from '../../services/telegramPolling';
+// 관리자 답장은 관리자 페이지(/admin)에서 작성 → RTDB 실시간 반영.
+// 기존 클라이언트 텔레그램 폴링(getUpdates)은 토큰 노출 때문에 제거.
 import { SessionManager } from '../../services/sessionManager';
 import { Message, SessionStatus } from '../../types/chat.types';
 import { sendSessionNotification } from '../../services/telegramNotifications';
@@ -95,8 +96,6 @@ const Chat: React.FC = () => {
     const newChatId = await sessionManagerRef.current.initializeSession(userId);
     setChatId(newChatId);
     setSessionStatus('active');
-    setActiveChat(newChatId);
-    startTelegramPolling();
 
     // localStorage에 채팅 정보 저장
     localStorageManager.saveChat(newChatId, {
@@ -129,8 +128,6 @@ const Chat: React.FC = () => {
     await sessionManagerRef.current.reopenSession(existingChatId);
     setChatId(existingChatId);
     setSessionStatus('reopened');
-    setActiveChat(existingChatId);
-    startTelegramPolling();
     setMessages(previousMessages);
     setShowResumeDialog(false);
 

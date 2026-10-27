@@ -25,29 +25,15 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthSuccess }) => {
     sessionStorage.setItem('adminOtp', newOtp);
     sessionStorage.setItem('otpExpiry', (Date.now() + 5 * 60 * 1000).toString());
 
-    // Telegram으로 OTP 전송
+    // Telegram으로 OTP 전송 — 토큰은 서버(/api/tg-send 시크릿)에만 존재
     try {
-      const botToken = process.env.REACT_APP_TELEGRAM_BOT_TOKEN;
-      const chatId = process.env.REACT_APP_TELEGRAM_CHAT_ID;
-
-      if (!botToken || !chatId) {
-        throw new Error('Telegram 설정이 없습니다');
-      }
-
       const message = `🔐 DIORA 관리자 인증 코드\n\n인증 코드: ${newOtp}\n\n⏱ 5분 내에 입력하세요\n🚨 본인이 요청하지 않았다면 무시하세요`;
 
-      const response = await fetch(
-        `https://api.telegram.org/bot${botToken}/sendMessage`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            chat_id: chatId,
-            text: message,
-            parse_mode: 'HTML'
-          })
-        }
-      );
+      const response = await fetch('/api/tg-send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: message })
+      });
 
       if (!response.ok) {
         throw new Error('OTP 전송 실패');
