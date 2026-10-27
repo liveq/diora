@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "es2021",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "lib": ["es2021", "webworker"],
+    "types": [],
+    "skipLibCheck": true,
+    "noEmit": true
+  },
+  "include": ["**/*.js"]
+}
